@@ -10,8 +10,6 @@ public class TestprojectApplication
 	public static void main(String[] args)
 	{
 		SpringApplication.run(TestprojectApplication.class, args);
-		
-		System.out.println();System.out.println();
 	}
 	
 }
