@@ -21,7 +21,7 @@ public class DeviceDto
 {
 
 	// 디바이스 저장
-	private Integer deviceSeq;
+	private Integer[] deviceSeq;
 	private String deviceCode;
 	private String deviceName;
 

@@ -4,8 +4,11 @@
 <div class="thirteen wide column" layout:fragment="content">
 
 	<div class="ui right aligned fluid container">
-		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</a>
+		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</button>
 	</div>
+	
+	
+	
 	<div id="registerPop" style="display: none;">
 		<div class="ui grid" style="padding-top: 30px;">
 			<div class="three column row">
@@ -13,10 +16,10 @@
 					<form class="ui form" id="Form">
 						<div class="field"><label>디바이스 코드</label>
 							<input type="text" label="디바이스 코드" placeholder="ex) DG , EL , CA" name="deviceCode"
-								maxlength="2"></div>
+								maxlength="6" ></div>
 						<div class="field"><label>디바이스 이름</label>
 							<input type="text" label="디바이스 이름" placeholder="디바이스 이름을 입력해주세요" name="deviceName"
-								maxlength="10"></div>
+								maxlength="20"></div>
 					</form>
 					<div id="thumbnailMul" style="padding-top:5px;"></div>
 					<div id="thumbnail" style="padding-top:5px;"></div>
@@ -27,6 +30,12 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	
+	
+	
+	
 	<div class="ui fluid container" style="padding-top: 30px;">
 		<table class="ui striped table">
 			<thead>

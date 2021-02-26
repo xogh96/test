@@ -1,8 +1,8 @@
 package com.sqisoft.testproject.service;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,11 +22,11 @@ import com.sqisoft.testproject.domain.ContentFileEntity;
 import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.model.DeviceDto;
+import com.sqisoft.testproject.repository.DeviceRepo;
 import com.sqisoft.testproject.repository.MuseumRepo;
 import com.sqisoft.testproject.util.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnailator;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
@@ -38,7 +38,7 @@ public class MuseumService
 
 	@Value("${content.file-path}")
 	private String contentPath;
-	
+
 	@Autowired
 	private FileUtils fileUtils;
 
@@ -101,8 +101,13 @@ public class MuseumService
 	@Transactional
 	public boolean insertOne(DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
 	{
+		List<DeviceEntity> devicelist = new ArrayList<DeviceEntity>();
 		// deviceseq로 devicecode랑 name 가져오기
-		DeviceEntity getDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()).orElse(null);
+		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
+		{
+			DeviceEntity getDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i]).orElse(null);
+			devicelist.add(getDeviceEntity);
+		}
 		DeviceDto getdeviceDto = setDtoInfos(deviceDto, mRequest.getFile("file"));
 
 		MuseumEntity museumEntity = new MuseumEntity();
@@ -120,18 +125,17 @@ public class MuseumService
 		museumEntity.setMuseumName(getdeviceDto.getMuseumName());
 		museumEntity.setMuseumTel(getdeviceDto.getMuseumTel());
 
-		museumEntity.setDeviceEntity(getDeviceEntity);
-
 		museumEntity.setContentFileEntity(contentFileEntity);
 
-		MuseumEntity savedMuseumEntity = museumRepository.save(museumEntity);
-		if (savedMuseumEntity == null)
+		museumEntity.setDeviceEntity(devicelist);
+
+		MuseumEntity savedEntity = museumRepository.save(museumEntity);
+
+		if (savedEntity == null)
 		{
 			return false;
-		} else
-		{
-			return true;
 		}
+		return true;
 	}
 
 	@Transactional
@@ -179,15 +183,15 @@ public class MuseumService
 
 		// 폴더에 방금만든 실제파일이름 으로 파일을 만든다 readonly , executable
 		File saveFile = new File(dir.getCanonicalPath(), fileHardName);
-		File saveThumbFile = new File(thumbdir.getCanonicalPath() , fileThumbHardName);
-		
+		File saveThumbFile = new File(thumbdir.getCanonicalPath(), fileThumbHardName);
+
 		// 읽기전용 ,파일소유자의 실행권한 관련 세팅을 해준다
-		//saveFile.setReadOnly();
-		//saveFile.setExecutable(false, false);
-		
+		// saveFile.setReadOnly();
+		// saveFile.setExecutable(false, false);
+
 		// 가져온 file을 saveFile로 transferTo해준다 (가져온 file에 설정해놓은 savefile로 받은파일을 씌워주는 과정)
 		file.transferTo(saveFile);
-		
+
 		Thumbnails.of(saveFile).size(150, 150).toFile(saveThumbFile);
 
 		// dto에 넣어준다

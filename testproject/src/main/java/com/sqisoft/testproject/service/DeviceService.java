@@ -37,9 +37,9 @@ public class DeviceService
 	@Transactional
 	public boolean modifyOne(Integer deviceSeq, DeviceEntity deviceEntity) throws IOException
 	{
+		
 		DeviceEntity saveddeviceEntity = deviceRepository.findById(deviceSeq).orElse(null);
 		// device 저장
-		saveddeviceEntity.setDeviceCode(deviceEntity.getDeviceCode());
 		saveddeviceEntity.setDeviceName(deviceEntity.getDeviceName());
 		
 		DeviceEntity savedEntity = deviceRepository.save(saveddeviceEntity);

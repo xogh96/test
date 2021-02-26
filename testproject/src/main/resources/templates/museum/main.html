@@ -4,29 +4,12 @@
 
 
 <div class="thirteen wide column" layout:fragment="content">
-
-	<div class="left aligned ui fluid container">
-		<label>디바이스 선택</label>
-		</br>
-		<div class="ui selection dropdown" onchange="fngetList(this)">
-			<input type="hidden" name="deviceSeq">
-
-			<i class="dropdown icon"></i>
-			<div class="default text">전체 목록</div>
-			<div class="menu" id="datas">
-				<div class="item" th:attr="data-value='all'">전체 목록</div>
-
-				<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}"
-					th:text="'('+${dev.deviceCode}+') '+${dev.deviceName}">목록</div>
-			</div>
+	<div class="ui container right aligned">
+		<div class="ui toggle checkbox" id="downtf">
+			<input type="checkbox" name="public">
+			<label>다운로드 받기</label>
 		</div>
 	</div>
-	<div class="ui container right aligned">
-			<div class="ui toggle checkbox" id="downtf">
-				<input type="checkbox" name="public">
-				<label>다운로드 받기</label>
-			</div>
-		</div>
 	<div class="ui right aligned fluid container">
 		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</button>
 	</div>
@@ -38,25 +21,8 @@
 				<div class="three column row">
 					<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">
 						<form class="ui form" id="Form">
-							<div class="field">
-								<label>적용 디바이스</label>
-								<div class="ui selection dropdown">
-									<input type="hidden" name="deviceSeq">
 
-									<i class="dropdown icon"></i>
-									<div class="default text">적용 디바이스를 선택해주세요</div>
-									<div class="menu" id="datas">
-										<div th:each="dev : ${devicelist}" class="item"
-											th:attr="data-value=${dev.deviceSeq}">
-											<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
-											<span th:text="${dev.deviceName}" />
 
-										</div>
-
-									</div>
-								</div>
-
-							</div>
 							<div class="field">
 								<label>박물관 이름</label>
 								<input type="text" placeholder="박물관 이름을 입력해주세요" name="museumName">
@@ -75,9 +41,28 @@
 								<input type="file" placeholder="박물관 로고를 선택해주세요" name="file"
 									onchange="previewImage(this,'thumbnailMul','300px','150px')" accept="image/*" />
 							</div>
+							<div id="thumbnailMul" style="padding-top:5px;"></div>
+							<div id="thumbnail" style="padding-top:5px;"></div>
+							<div class="field">
+								<label>적용 디바이스</label>
+								<div class="ui multiple selection dropdown">
+									<!-- This will receive comma separated value like OH,TX,WY !-->
+									<input name="deviceSeq" type="hidden">
+									<i class="dropdown icon"></i>
+									<div class="default text">States</div>
+									<div class="menu">
+										<div th:each="dev : ${devicelist}" class="item"
+											th:attr="data-value=${dev.deviceSeq}">
+											<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
+											<span th:text="${dev.deviceName}" />
+
+										</div>
+									</div>
+								</div>
+							</div>
+
 						</form>
-						<div id="thumbnailMul" style="padding-top:5px;"></div>
-						<div id="thumbnail" style="padding-top:5px;"></div>
+
 
 
 						<div class="ui right aligned container" style="padding-top: 30px;">
@@ -91,6 +76,49 @@
 	</div>
 
 	<div id="Table"></div>
+	<div class="ui fluid container" style="padding-top: 30px;">
+		<table class="ui striped table">
+			<thead>
+				<tr>
+					<th>박물관 이름</th>
+					<th class="center aligned">박물관 로고</th>
+					<th>박물관 전화번호</th>
+					<th>박물관 주소</th>
+					<th>설치된 디바이스</th>
+					<th class="right aligned">수정 / 삭제하기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="mus : ${museumlist}">
+					<td th:text="${mus.museumName}"></td>
+					<td class="center aligned">
+						<img th:src="${'/admin/file/imageView/' + mus.contentFileEntity.fileSeq}" width="300px"
+							height="100px" alt="이미지가 존재하지 않습니다" />
+						<span style="display: none;" class="downdatas"><br /><br />
+							<button class="primary basic ui icon button"
+								th:value="${'/admin/file/download/' + mus.contentFileEntity.fileSeq}"
+								onclick="fndownloadfile(this)">
+								<i class="download icon"></i> 다운로드 </button>
+						</span>
+					</td>
+					<td th:text="${mus.museumTel}"></td>
+					<td th:text="${mus.museumLoc}"></td>
+					<td>
+						<p style="color:red ;" th:each="device , index : ${mus.deviceEntity}"
+							th:text="${'(' + device.deviceCode + ')' + device.deviceName}"></p>
+					</td>
+					<td class="right aligned"><a class="ui button"
+							th:href="${'/admin/mus/modify/'+mus.museumSeq}">수정</a>
+						<button class="ui button" th:value="${mus.museumSeq}" onclick="fnDelete(this)">삭제</button> </td>
+				</tr>
+
+			</tbody>
+
+		</table>
+
+	</div>
+
+
 
 </div>
 
@@ -98,8 +126,7 @@
 <script>
 	$(function () {
 		$('.ui.dropdown').dropdown();
-		fngetList('onload');
-		
+
 		$('#downtf').checkbox({
 			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
 			onUnchecked: function () {$("span.downdatas").hide();},

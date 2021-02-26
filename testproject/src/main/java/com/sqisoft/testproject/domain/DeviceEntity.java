@@ -1,5 +1,6 @@
 package com.sqisoft.testproject.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -27,7 +31,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_device")
-public class DeviceEntity
+public class DeviceEntity implements Serializable
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,8 +44,8 @@ public class DeviceEntity
 	@Column(name = "dev_cd", columnDefinition = "VARCHAR(50) COMMENT '디바이스_코드' ")
 	private String deviceCode;
 	
-	@OneToMany(cascade = CascadeType.ALL , orphanRemoval = true, mappedBy = "deviceEntity")
-	@JsonBackReference
-	private List<MuseumEntity> museumEntity = new ArrayList<MuseumEntity>();
+	//@ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+	//@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_tb_device_1"))
+	//private MuseumEntity museumEntity;
 	
 }

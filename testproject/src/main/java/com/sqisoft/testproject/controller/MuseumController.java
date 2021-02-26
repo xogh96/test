@@ -42,11 +42,12 @@ public class MuseumController
 	public String main(Model model)
 	{
 		model.addAttribute("devicelist", deviceService.selectAll());
+		model.addAttribute("museumlist", museumService.selectAll());
 		return "/museum/main";
 	}
-	
+
 	@GetMapping("/modify/{museumSeq}")
-	public String modify(Model model , @PathVariable Integer museumSeq)
+	public String modify(Model model, @PathVariable Integer museumSeq)
 	{
 		model.addAttribute("museum", museumService.selectOne(museumSeq).orElse(null));
 		return "/museum/modify";
@@ -62,29 +63,19 @@ public class MuseumController
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
-	@PostMapping("/getlist/{deviceSeq}")
-	@ResponseBody
-	public List<MuseumEntity> selectlist(@PathVariable Integer deviceSeq) throws IOException
-	{
-		if(deviceSeq==-1) {
-			return museumService.selectAll();
-		}
-		List<MuseumEntity> list = museumService.selectByDeviceSeq(deviceSeq);
-		return list;
-	}
 	
 	@PostMapping("/modify/{museumSeq}")
 	@ResponseBody
-	public ResponseEntity<Boolean> modifyOne(@PathVariable Integer museumSeq , DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
+	public ResponseEntity<Boolean> modifyOne(@PathVariable Integer museumSeq, DeviceDto deviceDto, MultipartHttpServletRequest mRequest)
+					throws IOException
 	{
-		if (museumService.modifyOne(museumSeq,deviceDto,mRequest))
+		if (museumService.modifyOne(museumSeq, deviceDto, mRequest))
 		{
 			return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@PostMapping("/remove/{museumSeq}")
 	@ResponseBody
 	public ResponseEntity<String> deleteOne(@PathVariable Integer museumSeq)

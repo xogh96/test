@@ -309,42 +309,7 @@ function fngetList(e) {
 
 
 					
-//table을 만들어 주는 함수
-function fncreateTable(data) {
-	let str = '<div class="ui fluid container" style="padding-top: 30px;">';
-	str += '<table class="ui striped table">';
-	str += '<thead><tr>';
-	str+='<th>설치된 디바이스</th>';
-	str += '<th class="center aligned">박물관 로고</th>';
-	str+='<th>박물관 이름</th>';
-	str+='<th>박물관 전화번호</th>';
-	str+='<th>박물관 주소</th>';
-	str+='<th class="right aligned">수정 / 삭제하기</th>';
-	str += '</tr></thead>';
-	str += '<tbody>';
-	for (var i = 0; i < data.length; i++) {
-		let contentFile = data[i].contentFileEntity;
-		str += '<tr>';
-			str+='<td><span style="color:red">('+data[i].deviceEntity.deviceCode+')</span>'+data[i].deviceEntity.deviceName+'</td>';
-			str+='<td class="center aligned">';
-				str+='<img src="/admin/file/imageView/'+contentFile.fileSeq+'" width="300px" height="100px" alt="이미지가 존재하지 않습니다" />';
-				str+='<span style="display: none;" class="downdatas"><br/><br/>';
-				str+='<button class="primary basic ui icon button" value="/admin/file/download/'+contentFile.fileSeq+'" onclick="fndownloadfile(this)">';
-				str+='<i class="download icon"></i>	다운로드 </button>';
-				str+='</span>';
-			str+='</td>';
-			str+='<td>'+data[i].museumName+'</td>';
-			str+='<td>'+data[i].museumTel+'</td>';
-			str+='<td>'+data[i].museumLoc+'</td>';
-			str+='<td class="right aligned"><a class="ui button" href="/admin/mus/modify/'+data[i].museumSeq+'">수정</a>';
-			str+='<button class="ui button" value="'+data[i].museumSeq+'" onclick="fnDelete(this)">삭제</button> </td>';
-		str += '</tr>';
-	}
-	str += '</tbody>';
-	str += '</table>';
-	str += '</div>';
-	$("#Table").html(str);
-}
+
 
 
 //table을 만들어 주는 함수 html을 받아온다

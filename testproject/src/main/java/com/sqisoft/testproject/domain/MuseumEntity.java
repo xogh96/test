@@ -1,5 +1,6 @@
 package com.sqisoft.testproject.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "tb_museum")
-public class MuseumEntity
+public class MuseumEntity implements Serializable
 {
+
+	/**
+	 * serialVersionUID 설명 및 파라미터 설명
+	 */
+	private static final long serialVersionUID = 3513029757892997964L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,10 +62,8 @@ public class MuseumEntity
 	@JsonBackReference
 	private List<CategoryEntity> categoryEntity = new ArrayList<CategoryEntity>();
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "dev_seq", referencedColumnName = "dev_seq", foreignKey = @ForeignKey(name = "fk_tb_museum_1"))
-	@JsonManagedReference
-	private DeviceEntity deviceEntity;
+	@OneToMany( cascade = CascadeType.PERSIST ,orphanRemoval = false , fetch = FetchType.LAZY)
+	private List<DeviceEntity> deviceEntity;
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "file_seq", referencedColumnName = "file_seq", foreignKey = @ForeignKey(name = "fk_tb_museum_2"))
