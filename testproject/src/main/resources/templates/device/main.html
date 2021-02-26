@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default}">
+<div class="thirteen wide column" layout:fragment="content">
+
+	<div class="ui right aligned fluid container">
+		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</a>
+	</div>
+	<div id="registerPop" style="display: none;">
+		<div class="ui grid" style="padding-top: 30px;">
+			<div class="three column row">
+				<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">
+					<form class="ui form" id="Form">
+						<div class="field"><label>디바이스 코드</label>
+							<input type="text" label="디바이스 코드" placeholder="ex) DG , EL , CA" name="deviceCode"
+								maxlength="2"></div>
+						<div class="field"><label>디바이스 이름</label>
+							<input type="text" label="디바이스 이름" placeholder="디바이스 이름을 입력해주세요" name="deviceName"
+								maxlength="10"></div>
+					</form>
+					<div id="thumbnailMul" style="padding-top:5px;"></div>
+					<div id="thumbnail" style="padding-top:5px;"></div>
+					<div class="ui right aligned container" style="padding-top: 30px;"><button class="ui button"
+							id="btnSubmit" onclick="fnSubmit()">저장하기</button><button class="ui button" id="btnInvisible"
+							onclick="hideRegisterPop()">취소하기</button></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="ui fluid container" style="padding-top: 30px;">
+		<table class="ui striped table">
+			<thead>
+				<tr>
+					<th>디바이스 코드</th>
+					<th>디바이스 이름</th>
+					<th class="right aligned">수정/삭제하기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="dev : ${devicelist}">
+					<td th:text="${dev.deviceCode}" style="color:red;">디바이스 코드</td>
+					<td th:text="${dev.deviceName}">디바이스 이름</td>
+					<td class="right aligned">
+						<a class="ui button" th:href="${'/admin/dvc/modify/' +dev.deviceSeq}">수정</a>
+						<button class="ui button" th:value="${dev.deviceSeq}" onclick="fnDelete(this)">삭제</button>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+</div>
+
+</html>
+<script>
+
+</script>

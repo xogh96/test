@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default}">
+<div class="thirteen wide column" layout:fragment="content">
+
+
+	<div class="left aligned ui fluid container">
+		<label>박물관 선택</label>
+		</br>
+		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
+			<input type="hidden" name="museumSeq">
+			<i class="dropdown icon"></i>
+			<div class="default text">전체 목록</div>
+			<div class="menu" id="datas">
+				<div class="item" th:attr="data-value='all'">전체 목록</div>
+				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}"
+					th:text="${mus.museumName}  + '('+${mus.deviceEntity.deviceName}+')'">목록</div>
+			</div>
+		</div>
+		<div class="ui container right aligned">
+			<div class="ui toggle checkbox" id="downtf">
+			
+				<input type="checkbox" name="public">
+				<label>다운로드 받기</label>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="gettable"></div>
+
+</div>
+
+</html>
+<script>
+	$(function () {
+		$('.ui.dropdown').dropdown();
+		fngetListHTML('onload');
+
+		$('#downtf').checkbox({
+			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
+			onUnchecked: function () {$("span.downdatas").hide();},
+		});
+
+	});
+</script>

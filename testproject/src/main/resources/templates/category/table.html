@@ -1,0 +1,26 @@
+<div class="ui fluid container" style="padding-top: 30px;">
+		<table class="ui striped table">
+			<thead>
+				<tr>
+					<th>적용된 박물관</th>
+					<th>적용된 디바이스</th>
+					<th>카테고리 이름</th>
+					
+					<th class="right aligned">수정/삭제하기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="cat : ${categorylist}">
+				<td th:text="${cat.museumEntity.museumName}">적용된 박물관</td>
+				<td th:text="${cat.museumEntity.deviceEntity.deviceName}">적용된 박물관</td>
+					<td th:text="${cat.categoryName}" style="color:red;">카테고리 이름</td>
+					
+					<td class="right aligned">
+						<a class="ui button" th:href="${'/admin/cat/modify/'+cat.categorySeq}">수정</a>
+						<button class="ui button btnDel" th:value="${cat.categorySeq}"
+							onclick="fnDelete(this)">삭제</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>

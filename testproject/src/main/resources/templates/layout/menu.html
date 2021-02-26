@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="menuFragment" class="ui fluid container" style="padding-top: 30px; padding-left:100px; padding-right:100px;">
+	<div class="ui grid">
+		<div class="three wide column ">
+			<div class="ui  vertical menu">
+				<div class="item">
+					<div class="header">디바이스 관리</div>
+					<div class="menu">
+						<a class="item" href="/admin/dvc/main" id="menu_dvc">디바이스 목록</a>
+					</div>
+				</div>
+				<div class="item">
+					<div class="header">박물관 관리</div>
+					<div class="menu">
+						<a class="item" href="/admin/mus/main" id="menu_mus">박물관 목록</a>
+					</div>
+				</div>
+				<div class="item">
+					<div class="header">카테고리 관리</div>
+					<div class="menu">
+						<a class="item" href="/admin/cat/main" id="menu_cat">카테고리 목록</a>
+					</div>
+				</div>
+				<div class="item">
+					<div class="header">전시품목 관리</div>
+					<div class="menu">
+						<a class="item" href="/admin/ex/main" id="menu_ex">전시품목 목록</a>
+					</div>
+				</div>
+			
+	</div>
+</div>
+		
+</html>

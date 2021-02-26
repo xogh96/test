@@ -1,0 +1,9 @@
+<script>
+let contextPath = sessionStorage.getItem("contextPath");
+let viewPath = sessionStorage.getItem("viewPath");
+
+if(viewPath=='/login'){
+	viewPath='/dvc';
+}
+location.replace(contextPath+viewPath+"/main");
+</script>

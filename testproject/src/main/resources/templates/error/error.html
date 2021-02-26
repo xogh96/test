@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<th:block th:replace="layout/header"></th:block>
+
+<body>
+<div th:replace="layout/top"></div>
+ <div class="ui container" layout:fragment="content">
+    <h1 class="ui header">에러 페이지</h1>
+    error code : <span id="stcode" th:text="${code}"></span>
+    <br>error msg : <span th:text="${msg}"></span>
+    <br>timestamp : <span th:text="${timestamp}"></span>
+  </div>
+
+	
+</body>
+</html>
+
+<script>
+	
+</script>

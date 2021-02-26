@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head th:replace="layout/header:: headerFragment" ></head>
+
+    <body>
+        <div class="ui active inverted dimmer" id="loadingpage" style="display: none;">
+    		<div class="ui large text loader">잠시만 기다려주세요</div>
+  		</div>
+		
+        <div th:replace="layout/top :: topFragment"></div>
+        <div th:replace="layout/menu :: menuFragment"></div>
+
+        
+            <div layout:fragment="content"></div>
+
+    </body>
+</div>
+</html>

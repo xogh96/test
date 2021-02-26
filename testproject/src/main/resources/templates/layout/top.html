@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<div th:fragment="topFragment" class="ui container right aligned" style="padding-top: 40px; padding-bottom: 30px;">
+
+	<div sec:authorize="isAuthenticated()">
+		<a class="ui button" th:href="@{/logout}">로그아웃</a>
+
+		
+	</div>
+
+
+
+</div>
+
+</html>

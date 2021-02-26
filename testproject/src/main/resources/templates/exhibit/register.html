@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/default}">
+
+<div class="thirteen wide column" layout:fragment="content">
+	<div class="ui right aligned fluid container">
+		<a class="ui button" href="/admin">뒤로가기</a>
+	</div>
+	<div class="ui fluid conatainer">
+		<form class="ui form" id="Form" enctype="multipart/form-data">
+			<input type="hidden" name="categorySeq" th:value="${category.categorySeq}">
+			<div class="two fields">
+				<div class="field disabled">
+					<label>박물관 이름</label>
+					<input type="text" placeholder="박물관 이름을 입력해주세요" name="museumName"
+						th:value="${category.museumEntity.museumName}" readonly>
+				</div>
+			</div>
+			<div class="two fields">
+				<div class="field disabled">
+					<label>카테고리 이름</label>
+					<input type="text" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
+						th:value="${category.categoryName}" readonly>
+				</div>
+			</div>
+
+			<div class="two fields">
+				<div class="field">
+					<label>전시작품 (최대 10개까지만 가능합니다)</label>
+					<input type="file" placeholder="박물관 로고를 선택해주세요" name="" id="fileinfos"  accept="image/* , video/*" />
+				</div>
+			</div>
+		</form>
+		<div  style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
+		<div id="thumbnailMul" class="ui conatiner"></div>
+
+
+
+
+		<div class="ui modal">
+			<div class="header">작품명을 입력 해주세요</div>
+			<div class="image content">
+				<img class="image" id="contimage" style="width: 400px; height:400px; ">
+				<div class="ui container">
+					<div class="description" style="padding: 30px;">
+						<p>
+						<form class="ui form">
+							<div class="field">
+								<label>작품 이름을 입력 해주세요</label>
+								<input type="text" placeholder="작품이름" name="text" id="contentName" />
+							</div>
+						</form>
+						</p>
+						<div class="actions">
+							<div class="ui approve button disabled" id="confirm">확인</div>
+							<div class="ui cancel button" id="cancled">취소</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<br /><br />
+	<button class="ui button" onclick="fnExhibitSubmit()">저장하기</button>
+	<!--onclick="fnSubmit()"-->
+</div>
+
+
+</html>
+<script>
+	const contentarray = [];
+	const filearray = [];
+
+	$(function () {
+
+		//입력되면 disabled 속성 없애주는 함수
+		$("#contentName").on("change keyup paste", function () {
+			if ($(this).val() != "") {
+				$("#confirm").removeClass("disabled");
+			}
+			else {
+				$("#confirm").addClass("disabled");
+			}
+		});
+
+		//파일이 바뀌면 array에 추가해주는 함수
+		$("#fileinfos").change(function (event) {
+			if (event.target.files[0] != null) {
+				$('.ui.modal').modal({
+					inverted: true
+				}).modal('show').modal('setting', 'closable', false);
+
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					$("#contimage").attr('src', e.target.result);
+					$("#contimage").attr('alt', "동영상 미리보기는 아직 구현되지 않았습니다");
+				}
+				reader.readAsDataURL($("#fileinfos")[0].files[0]);
+
+				filearray.push(event.target.files[0]);
+				console.log(filearray);
+				$("#howmany").text(filearray.length);
+			}
+		});
+
+		//파일이 바뀌고 확인을 누르면 밑에 추가해주는 함수
+		$("#confirm").click(function () {
+			contentarray.push($("#contentName").val());
+			console.log(contentarray);
+			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '400px', '200px', $("#contentName").val());
+
+			$("#contentName").val("");
+			$("#confirm").addClass("disabled");
+			$("#howmany").text(filearray.length);
+		});
+
+		//취소 버튼을 누르면 일어나는 이벤트
+		$("#cancled").click(function () {
+			//$("#thumbnailMul").children().last().remove()
+			filearray.pop();
+			$("#howmany").text(filearray.length);
+		});
+	});
+	function delcon(e) {
+		$("#thumbnailMul div:nth-child(" + e.value + ")").remove();
+		contentarray.splice([e.value - 1], 1);
+		filearray.splice([e.value - 1], 1);
+		for (i = e.value - 1; i < $("#thumbnailMul").find('button').length; i++) {
+			$("#thumbnailMul").find('button')[i].value -= 1;
+		}
+		$("#howmany").text(filearray.length);
+
+	}
+</script>
