@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.model.DeviceDto;
@@ -49,10 +50,24 @@ public class MuseumController
 	@GetMapping("/modify/{museumSeq}")
 	public String modify(Model model, @PathVariable Integer museumSeq)
 	{
+		model.addAttribute("devicelist", deviceService.selectAll());
 		model.addAttribute("museum", museumService.selectOne(museumSeq).orElse(null));
+		model.addAttribute("deviceSeq", museumService.selectOneDeviceSeq(museumSeq));
 		return "/museum/modify";
 	}
-
+	
+	@PostMapping("/getlist/{deviceSeq}")
+	public String selectlist(@PathVariable Integer deviceSeq , Model model) throws IOException
+	{
+		if(deviceSeq==-1) {
+			model.addAttribute("museumlist",museumService.selectAll()); 
+			return "/museum/table";
+		}
+		List<MuseumEntity> list = museumService.selectDeviceList(deviceSeq);
+		model.addAttribute("museumlist",list);
+		return "/museum/table";
+	}
+	
 	@PostMapping("/add")
 	@ResponseBody
 	public ResponseEntity<Boolean> saveOne(DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
@@ -75,6 +90,8 @@ public class MuseumController
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	
 
 	@PostMapping("/remove/{museumSeq}")
 	@ResponseBody

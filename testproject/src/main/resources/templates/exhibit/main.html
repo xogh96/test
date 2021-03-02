@@ -5,7 +5,7 @@
 
 
 	<div class="left aligned ui fluid container">
-		<label>박물관 선택</label>
+		<label>박물관 조회</label>
 		</br>
 		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
 			<input type="hidden" name="museumSeq">
@@ -13,8 +13,9 @@
 			<div class="default text">전체 목록</div>
 			<div class="menu" id="datas">
 				<div class="item" th:attr="data-value='all'">전체 목록</div>
-				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}"
-					th:text="${mus.museumName}  + '('+${mus.deviceEntity.deviceName}+')'">목록</div>
+				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}">
+					<span th:text="${mus.museumName}" />
+				</div>
 			</div>
 		</div>
 		<div class="ui container right aligned">

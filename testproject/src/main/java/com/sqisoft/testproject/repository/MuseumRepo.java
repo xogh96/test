@@ -11,5 +11,6 @@ import com.sqisoft.testproject.domain.MuseumEntity;
 @Repository
 public interface MuseumRepo extends JpaRepository<MuseumEntity, Integer>
 {
+
 	List<MuseumEntity> findByDeviceEntityDeviceSeq(Integer DeviceSeq);
 }

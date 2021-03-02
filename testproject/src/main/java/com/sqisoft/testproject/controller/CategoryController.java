@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.CategoryEntity;
+import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.model.CategoryDto;
 import com.sqisoft.testproject.model.DeviceDto;
@@ -31,7 +33,7 @@ public class CategoryController
 {
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@Autowired
 	MuseumService museumService;
 
@@ -42,17 +44,24 @@ public class CategoryController
 		model.addAttribute("museumlist", museumService.selectAll());
 		return "/category/main";
 	}
-	
+
 	@GetMapping("/modify/{categorySeq}")
-	public String modifypage(Model model ,  @PathVariable Integer categorySeq)
+	public String modifypage(Model model, @PathVariable Integer categorySeq)
 	{
 		model.addAttribute("category", categoryService.selectOne(categorySeq).orElse(null));
 		return "/category/modify";
 	}
-	
+
+	@PostMapping("/getdevlist/{museumSeq}")
+	@ResponseBody
+	public List<DeviceEntity> getDeviceList(@PathVariable Integer museumSeq)
+	{
+		return categoryService.selectDeviceListByMuseumSeq(museumSeq);
+	}
+
 	@PostMapping("/add")
 	@ResponseBody
-	public ResponseEntity<Boolean> saveOne(CategoryDto categoryDto) 
+	public ResponseEntity<Boolean> saveOne(CategoryDto categoryDto)
 	{
 		log.debug(categoryDto.toString());
 		if (categoryService.insertOne(categoryDto))
@@ -61,31 +70,32 @@ public class CategoryController
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@PostMapping("/modify/{categorySeq}")
 	@ResponseBody
-	public ResponseEntity<Boolean> modifyOne(@PathVariable Integer categorySeq,CategoryDto categoryDto)
+	public ResponseEntity<Boolean> modifyOne(@PathVariable Integer categorySeq, CategoryDto categoryDto)
 	{
 		log.debug(categoryDto.toString());
-		if (categoryService.modifyOne(categorySeq,categoryDto))
+		if (categoryService.modifyOne(categorySeq, categoryDto))
 		{
 			return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@PostMapping("/getlist/{museumSeq}")
-	public String selectlist(@PathVariable Integer museumSeq , Model model) throws IOException
+	public String selectlist(@PathVariable Integer museumSeq, Model model) throws IOException
 	{
-		if(museumSeq==-1) {
-			model.addAttribute("categorylist",categoryService.selectAll()); 
+		if (museumSeq == -1)
+		{
+			model.addAttribute("categorylist", categoryService.selectAll());
 			return "/category/table";
 		}
 		List<CategoryEntity> list = categoryService.selectBymuseumSeq(museumSeq);
-		model.addAttribute("categorylist",list);
+		model.addAttribute("categorylist", list);
 		return "/category/table";
 	}
-	
+
 	@PostMapping("/remove/{categorySeq}")
 	@ResponseBody
 	public ResponseEntity<String> deleteOne(@PathVariable Integer categorySeq)

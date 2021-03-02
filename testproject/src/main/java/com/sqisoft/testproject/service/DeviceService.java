@@ -1,12 +1,14 @@
 package com.sqisoft.testproject.service;
 
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.sqisoft.testproject.config.SqiException;
@@ -67,7 +69,7 @@ public class DeviceService
 	}
 
 	@Transactional
-	public void deleteOne(Integer deviceSeq)
+	public void deleteOne(Integer deviceSeq) throws DataIntegrityViolationException
 	{
 		deviceRepository.deleteById(deviceSeq);
 	}

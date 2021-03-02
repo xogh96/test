@@ -22,8 +22,11 @@ public class CategoryDto
 
 	// 디바이스 저장
 	private String categoryName;
-	
+
 	// 박물관 이름
 	private Integer museumSeq;
+
+	// 박물관 이름
+	private Integer deviceSeq;
 
 }

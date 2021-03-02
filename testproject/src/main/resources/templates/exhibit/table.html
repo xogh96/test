@@ -6,17 +6,17 @@
 	<table class="ui striped table">
 		<thead>
 			<tr>
-				<th>적용된 박물관</th>
-				<th>적용된 디바이스</th>
+				<th>박물관</th>
+				<th>디바이스</th>
 				<th>카테고리</th>
-				<th class="center aligned">등록된 작품</th>
+				<th class="center aligned">작품</th>
 				<th>작품 관리</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="catlist : ${categorylist}">
 				<td th:text="${catlist.museumEntity.museumName}" />
-				<td th:text="${catlist.museumEntity.deviceEntity.deviceName}">적용된 디바이스</td>
+				<td th:text="${catlist.deviceEntity.deviceName}">적용된 디바이스</td>
 				<td th:text="${catlist.categoryName}" />
 
 				<td>
@@ -30,6 +30,8 @@
 							<span th:if="${catlist.contentEntity.size == 0}" style="color:red;">작품을 먼저 등록해주세요</span>
 						</div>
 						<div class="content">
+						
+						
 
 							<span th:each="contentlist : ${catlist.contentEntity}">
 							<div style="display: inline-block;" class="center aligned">
@@ -48,7 +50,7 @@
 						/>
 					
 					
-					<h3 class="ui header"  th:text="'작품명 : '+${contentlist.contentName}" ></h3>
+					<h3 class="ui header"  th:text="${contentlist.contentName}" ></h3>
 					
 					<span style="display: none;" class="downdatas">
 					<button class="primary basic ui icon button" 

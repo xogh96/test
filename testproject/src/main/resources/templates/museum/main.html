@@ -4,6 +4,24 @@
 
 
 <div class="thirteen wide column" layout:fragment="content">
+
+<div class="left aligned ui fluid container">
+		<label>디바이스 조회</label>
+		</br>
+		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
+			<input type="hidden" name="deviceSeq">
+			<i class="dropdown icon"></i>
+			<div class="default text">전체 목록</div>
+			<div class="menu" id="datas">
+				<div class="item" th:attr="data-value='all'">전체 목록</div>
+				<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
+					<span th:text="${dev.deviceName}" />
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
 	<div class="ui container right aligned">
 		<div class="ui toggle checkbox" id="downtf">
 			<input type="checkbox" name="public">
@@ -75,49 +93,8 @@
 		</div>
 	</div>
 
-	<div id="Table"></div>
-	<div class="ui fluid container" style="padding-top: 30px;">
-		<table class="ui striped table">
-			<thead>
-				<tr>
-					<th>박물관 이름</th>
-					<th class="center aligned">박물관 로고</th>
-					<th>박물관 전화번호</th>
-					<th>박물관 주소</th>
-					<th>설치된 디바이스</th>
-					<th class="right aligned">수정 / 삭제하기</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="mus : ${museumlist}">
-					<td th:text="${mus.museumName}"></td>
-					<td class="center aligned">
-						<img th:src="${'/admin/file/imageView/' + mus.contentFileEntity.fileSeq}" width="300px"
-							height="100px" alt="이미지가 존재하지 않습니다" />
-						<span style="display: none;" class="downdatas"><br /><br />
-							<button class="primary basic ui icon button"
-								th:value="${'/admin/file/download/' + mus.contentFileEntity.fileSeq}"
-								onclick="fndownloadfile(this)">
-								<i class="download icon"></i> 다운로드 </button>
-						</span>
-					</td>
-					<td th:text="${mus.museumTel}"></td>
-					<td th:text="${mus.museumLoc}"></td>
-					<td>
-						<p style="color:red ;" th:each="device , index : ${mus.deviceEntity}"
-							th:text="${'(' + device.deviceCode + ')' + device.deviceName}"></p>
-					</td>
-					<td class="right aligned"><a class="ui button"
-							th:href="${'/admin/mus/modify/'+mus.museumSeq}">수정</a>
-						<button class="ui button" th:value="${mus.museumSeq}" onclick="fnDelete(this)">삭제</button> </td>
-				</tr>
-
-			</tbody>
-
-		</table>
-
-	</div>
-
+	<div id="gettable"></div>
+	
 
 
 </div>
@@ -126,7 +103,7 @@
 <script>
 	$(function () {
 		$('.ui.dropdown').dropdown();
-
+		fngetListHTML('onload');
 		$('#downtf').checkbox({
 			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
 			onUnchecked: function () {$("span.downdatas").hide();},

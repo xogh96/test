@@ -46,7 +46,12 @@ public class CategoryEntity
 	@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_tb_category_1"))
 	@JsonManagedReference
 	private MuseumEntity museumEntity;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dev_seq", referencedColumnName = "dev_seq", foreignKey = @ForeignKey(name = "fk_tb_category_2"))
+	private DeviceEntity deviceEntity;
 
+	
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "categoryEntity")
 	private List<ContentEntity> contentEntity = new ArrayList<ContentEntity>();
 }

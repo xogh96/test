@@ -4,7 +4,7 @@
 <div class="thirteen wide column" layout:fragment="content">
 
 	<div class="left aligned ui fluid container">
-		<label>박물관 선택</label>
+		<label>박물관 조회</label> 
 		</br>
 		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
 			<input type="hidden" name="museumSeq">
@@ -12,8 +12,9 @@
 			<div class="default text">전체 목록</div>
 			<div class="menu" id="datas">
 				<div class="item" th:attr="data-value='all'">전체 목록</div>
-				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}"
-					th:text="${mus.museumName} + '('+${mus.deviceEntity.deviceName}+')'">목록</div>
+				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}">
+					<span th:text="${mus.museumName}" />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -29,17 +30,26 @@
 						<div class="field">
 							<label>적용 박물관</label>
 							<div class="ui selection dropdown">
-								<input type="hidden" name="museumSeq">
+								<input type="hidden" name="museumSeq" onchange="getlist(this)">
 								<i class="dropdown icon"></i>
 								<div class="default text">적용 박물관을 선택해주세요</div>
 								<div class="menu" id="datas">
 									<div th:each="mus : ${museumlist}" class="item"
 										th:attr="data-value=${mus.museumSeq}">
-										<span th:text="${mus.museumName}+'('+${mus.deviceEntity.deviceName}+')'" />
+										<span th:text="${mus.museumName}" />
 									</div>
 								</div>
 							</div>
-
+						</div>
+						<div class="field">
+							<label>적용 디바이스</label>
+							<div class="ui selection dropdown">
+								<input type="hidden" name="deviceSeq">
+								<i class="dropdown icon"></i>
+								<div class="default text">적용 디바이스를 선택해주세요</div>
+								<div class="menu" id="devicedatas">
+								</div>
+							</div>
 						</div>
 						<div class="field"><label>카테고리 이름</label>
 							<input type="text" label="카테고리 이름" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
@@ -59,6 +69,27 @@
 
 </html>
 <script>
+	function getlist(event) {
+		let contextPath = sessionStorage.getItem("contextPath");
+		let viewPath = sessionStorage.getItem("viewPath");
+		$.post(contextPath + viewPath + '/getdevlist/' + event.value,
+			function (result) {
+				for (i = 0; i < result.length; i++) {
+					let str =
+						'<div class="item" data-value="' + result[i].deviceSeq + '">' +
+						'<span>' + result[i].deviceName + '</span>' +
+						'</div>';
+					$("#devicedatas").append(str);
+				}
+			}
+		).fail(
+			function (error) {
+				alert(fnGetErrorMessage(error));
+				$("#devicedatas").html("");
+			});
+	}
+
+
 	$(function () {
 		$('.ui.dropdown').dropdown();
 		fngetListHTML('onload');

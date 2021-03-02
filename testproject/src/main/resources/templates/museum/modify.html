@@ -8,21 +8,7 @@
 	</div>
 	<div class="ui fluid conatainer">
 		<form class="ui form" id="Form">
-		
-		<div class="two fields">
-				<div class="field">
-					<label>디바이스 코드</label>
-					<input type="text" placeholder="박물관 이름을 입력해주세요"  th:value="${museum.deviceEntity.deviceCode}" readonly disabled>
-				</div>
-			</div>
-			
-			<div class="two fields">
-				<div class="field">
-					<label>디바이스 이름</label>
-					<input type="text" placeholder="박물관 이름을 입력해주세요"  th:value="${museum.deviceEntity.deviceName}" readonly disabled>
-				</div>
-			</div>
-			
+
 			
 			<div class="two fields">
 				<div class="field">
@@ -50,10 +36,50 @@
 						onchange="previewImage(this,'thumbnailMul','300px','150px')" accept="image/*" />
 				</div>
 			</div>
+			<div id="thumbnailMul" style="padding-top:5px;"><img
+				th:src="${'/admin/file/imageView/'+museum.contentFileEntity.fileSeq}" width="300px" height="150px">
+		</div>
+		<br/><br/>
+			<div class="two fields">
+				<div class="field">
+					<label>적용 디바이스</label>
+					<div class="ui multiple selection dropdown">
+						<!-- This will receive comma separated value like OH,TX,WY !-->
+						<input name="deviceSeq" type="hidden">
+						<i class="dropdown icon"></i>
+						<div class="default text">States</div>
+						<div class="menu">
+							<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
+								<span th:text="${dev.deviceName}" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</form>
-		<div id="thumbnailMul" style="padding-top:5px;"><img th:src="${'/admin/file/imageView/'+museum.contentFileEntity.fileSeq}" width="300px" height="150px" ></div>
+		
+		
+		
 	</div>
 	<button class="ui button" id="btnSubmit" onclick="fnModify('museumSeq')">저장하기</button>
 </div>
 
 </html>
+<script>
+
+
+	$(function () {
+
+		/*<![CDATA[*/
+			let deviceseq = "[[${deviceSeq}]]";
+		/*]]>*/
+		
+		let strdeviceseq = [];
+		for(i=0;i<deviceseq.length;i++){
+			strdeviceseq.push(String(deviceseq[i]));
+		}
+		$('.ui.dropdown').dropdown('set selected',strdeviceseq);
+		
+	})
+
+</script>

@@ -1,0 +1,41 @@
+<div class="ui fluid container" style="padding-top: 30px;">
+		<table class="ui striped table">
+			<thead>
+				<tr>
+					<th>박물관 </th>
+					<th class="center aligned">로고</th>
+					<th>전화번호</th>
+					<th>주소</th>
+					<th>디바이스</th>
+					<th class="right aligned">수정 / 삭제하기</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="mus : ${museumlist}">
+					<td th:text="${mus.museumName}"></td>
+					<td class="center aligned">
+						<img th:src="${'/admin/file/imageView/' + mus.contentFileEntity.fileSeq}" width="300px"
+							height="100px" alt="이미지가 존재하지 않습니다" />
+						<span style="display: none;" class="downdatas"><br /><br />
+							<button class="primary basic ui icon button"
+								th:value="${'/admin/file/download/' + mus.contentFileEntity.fileSeq}"
+								onclick="fndownloadfile(this)">
+								<i class="download icon"></i> 다운로드 </button>
+						</span>
+					</td>
+					<td th:text="${mus.museumTel}"></td>
+					<td th:text="${mus.museumLoc}"></td>
+					<td>
+						<p style="color:red ;" th:each="device , index : ${mus.deviceEntity}"
+							th:text="${device.deviceName}"></p>
+					</td>
+					<td class="right aligned"><a class="ui button"
+							th:href="${'/admin/mus/modify/'+mus.museumSeq}">수정</a>
+						<button class="ui button" th:value="${mus.museumSeq}" onclick="fnDelete(this)">삭제</button> </td>
+				</tr>
+
+			</tbody>
+
+		</table>
+
+	</div>

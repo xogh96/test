@@ -13,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -57,13 +59,16 @@ public class MuseumEntity implements Serializable
 
 	@Column(name = "mu_loc", columnDefinition = "VARCHAR(300) COMMENT '박물관_주소' ")
 	private String museumLoc;
-
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "museumEntity")
 	@JsonBackReference
 	private List<CategoryEntity> categoryEntity = new ArrayList<CategoryEntity>();
-
-	@OneToMany( cascade = CascadeType.PERSIST ,orphanRemoval = false , fetch = FetchType.LAZY)
-	private List<DeviceEntity> deviceEntity;
+	
+	@ManyToMany
+  	@JoinTable(name = "tb_museum_device",
+  				joinColumns = @JoinColumn(name = "mu_seq"),
+  				inverseJoinColumns = @JoinColumn(name = "dev_seq") )
+  	private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(name = "file_seq", referencedColumnName = "file_seq", foreignKey = @ForeignKey(name = "fk_tb_museum_2"))

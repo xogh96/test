@@ -241,10 +241,11 @@ function fnDelete(id) {
 	if (confirm("정말 삭제 하시겠습니까?")) {
 		$.post(contextPath + viewPath + "/remove/" + id.value,
 			function(data) {
+				console.log(data);
 				location.replace(contextPath);
 			}
-		).fail(function() {
-			alert("삭제실패 , 다시 시도해주세요");
+		).fail(function(error) {
+			alert(fnGetErrorMessage(error));
 		});
 	}
 }
@@ -276,41 +277,6 @@ function showRegisterPop() {
 function hideRegisterPop() {
 	$("#registerPop").hide();
 }
-//list를 post방식으로 get해오는 함수
-function fngetList(e) {
-	
-	let contextPath = sessionStorage.getItem("contextPath");
-	let viewPath = sessionStorage.getItem("viewPath");
-	if(e=='onload'){
-		$.post(contextPath + viewPath + '/getlist/' + -1,
-		function(result) {
-			fncreateTable(result);
-		}
-	).fail(
-		function(error) {
-			alert(fnGetErrorMessage(error));
-		});
-	}else{
-	let data = e.childNodes[1].value
-	if (data == 'all' || e=='all') {
-		data = -1;
-	}
-	$.post(contextPath + viewPath + '/getlist/' + data,
-		function(result) {
-			fncreateTable(result);
-		}
-	).fail(
-		function(error) {
-			alert(fnGetErrorMessage(error));
-		});
-		}
-}
-
-
-
-					
-
-
 
 //table을 만들어 주는 함수 html을 받아온다
 function fngetListHTML(e) {
@@ -416,3 +382,8 @@ function fndownloadfile(e) {
 	});
 }
 	
+function showRegisterPopModal() {
+	$('.ui.modal').modal({
+		inverted: true
+	}).modal('show').modal('setting', 'closable', false);
+}

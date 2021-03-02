@@ -13,9 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -43,9 +46,4 @@ public class DeviceEntity implements Serializable
 
 	@Column(name = "dev_cd", columnDefinition = "VARCHAR(50) COMMENT '디바이스_코드' ")
 	private String deviceCode;
-	
-	//@ManyToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
-	//@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_tb_device_1"))
-	//private MuseumEntity museumEntity;
-	
 }

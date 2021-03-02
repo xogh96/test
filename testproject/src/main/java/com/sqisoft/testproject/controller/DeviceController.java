@@ -1,11 +1,13 @@
 package com.sqisoft.testproject.controller;
 
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.connector.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.model.DeviceDto;
 import com.sqisoft.testproject.service.DeviceService;
@@ -73,8 +76,13 @@ public class DeviceController
 	@ResponseBody
 	public ResponseEntity<String> deleteOne(@PathVariable Integer deviceSeq)
 	{
-		log.debug(deviceSeq.toString());
-		deviceService.deleteOne(deviceSeq);
+		try
+		{
+			deviceService.deleteOne(deviceSeq);
+		} catch (DataIntegrityViolationException e)
+		{
+			throw new SqiException("적용된 박물관이 있어 제거할 수 없습니다");
+		}
 		return ResponseEntity.ok("삭제 완료");
 	}
 }

@@ -4,44 +4,42 @@
 <div class="thirteen wide column" layout:fragment="content">
 
 	<div class="ui right aligned fluid container">
-		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</button>
+		<button class="ui button" id="btnReg" onclick="showRegisterPopModal()">등록하기</button>
 	</div>
-	
-	
-	
-	<div id="registerPop" style="display: none;">
-		<div class="ui grid" style="padding-top: 30px;">
-			<div class="three column row">
-				<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">
-					<form class="ui form" id="Form">
-						<div class="field"><label>디바이스 코드</label>
-							<input type="text" label="디바이스 코드" placeholder="ex) DG , EL , CA" name="deviceCode"
-								maxlength="6" ></div>
-						<div class="field"><label>디바이스 이름</label>
-							<input type="text" label="디바이스 이름" placeholder="디바이스 이름을 입력해주세요" name="deviceName"
-								maxlength="20"></div>
-					</form>
-					<div id="thumbnailMul" style="padding-top:5px;"></div>
-					<div id="thumbnail" style="padding-top:5px;"></div>
-					<div class="ui right aligned container" style="padding-top: 30px;"><button class="ui button"
-							id="btnSubmit" onclick="fnSubmit()">저장하기</button><button class="ui button" id="btnInvisible"
-							onclick="hideRegisterPop()">취소하기</button></div>
+	<div id="registerPop" class="ui modal">
+		<div class="ui grid">
+			<div class="column" style="background-color:antiquewhite; padding: 30px;">
+				<form class="ui form" id="Form">
+					<div class="field"><label>코드</label>
+						<input type="text" label="디바이스 코드" placeholder="ex) DG , EL , CA" name="deviceCode"
+							maxlength="6"></div>
+					<div class="field"><label>이름</label>
+						<input type="text" label="디바이스 이름" placeholder="디바이스 이름을 입력해주세요" name="deviceName"
+							maxlength="20"></div>
+				</form>
+				<div id="thumbnailMul" style="padding-top:5px;"></div>
+				<div id="thumbnail" style="padding-top:5px;"></div>
+
+
+				<div class="ui right aligned container" style="padding-top: 30px;">
+					<div class="actions">
+						<button class="ui button" id="btnSubmit" onclick="fnSubmit()">저장하기</button>
+						<button class="ui cancel button" id="btnInvisible" onclick="hideRegisterPop()">취소하기</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	
-	
-	
-	
-	
+
+
+
+
 	<div class="ui fluid container" style="padding-top: 30px;">
 		<table class="ui striped table">
 			<thead>
 				<tr>
-					<th>디바이스 코드</th>
-					<th>디바이스 이름</th>
+					<th>코드</th>
+					<th>이름</th>
 					<th class="right aligned">수정/삭제하기</th>
 				</tr>
 			</thead>
@@ -62,5 +60,6 @@
 
 </html>
 <script>
+	
 
 </script>

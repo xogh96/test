@@ -56,25 +56,42 @@ public class MuseumService
 	{
 		return museumRepository.findById(museumSeq);
 	}
-
+	
 	@Transactional
-	public List<MuseumEntity> selectByDeviceSeq(Integer deviceSeq)
+	public List<Integer> selectOneDeviceSeq(Integer museumSeq)
 	{
-		List<MuseumEntity> list = museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
-		if (list.size() == 0)
+		MuseumEntity museumEntity = museumRepository.findById(museumSeq).orElse(null);
+		List<DeviceEntity> deviceList = museumEntity.getDeviceEntity();
+		List<Integer> deviceSeq = new ArrayList<Integer>();
+		
+		for (int i = 0; i < deviceList.size(); i++)
 		{
-			throw new SqiException("데이터가 존재하지 않습니다 등록먼저 해주세요");
+			deviceSeq.add(deviceList.get(i).getDeviceSeq());
 		}
-		return list;
+		return deviceSeq;
+	}
+	
+	public List<MuseumEntity> selectDeviceList(Integer deviceSeq)
+	{
+		return museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
 	}
 
 	@Transactional
 	public boolean modifyOne(Integer museumSeq, DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
 	{
+		List<DeviceEntity> devicelist = new ArrayList<DeviceEntity>();
+		// deviceseq로 devicecode랑 name 가져오기
+		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
+		{
+			DeviceEntity getDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i]).orElse(null);
+			devicelist.add(getDeviceEntity);
+		}
+		
 		MuseumEntity museumEntity = museumRepository.findById(museumSeq).orElse(null);
 		museumEntity.setMuseumName(deviceDto.getMuseumName());
 		museumEntity.setMuseumLoc(deviceDto.getMuseumLoc());
 		museumEntity.setMuseumTel(deviceDto.getMuseumTel());
+		museumEntity.setDeviceEntity(devicelist);
 
 		// 만약 파일이 들어온게 있다면
 		if (!mRequest.getFile("file").isEmpty())
@@ -203,5 +220,8 @@ public class MuseumService
 		deviceDto.setFileOrder(0);
 		return deviceDto;
 	}
+
+	
+
 
 }
