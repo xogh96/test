@@ -5,23 +5,23 @@
 
 <div class="thirteen wide column" layout:fragment="content">
 
-<div class="left aligned ui fluid container">
+	<div class="left aligned ui fluid container">
 		<label>디바이스 조회</label>
 		</br>
-		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
-			<input type="hidden" name="deviceSeq">
+		<div class="ui selection dropdown" onchange="fngetListHTML()">
+			<input type="hidden" name="deviceSeq" id="getlistdata">
 			<i class="dropdown icon"></i>
 			<div class="default text">전체 목록</div>
 			<div class="menu" id="datas">
-				<div class="item" th:attr="data-value='all'">전체 목록</div>
+				<div class="item" th:attr="data-value=-1">전체 목록</div>
 				<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
 					<span th:text="${dev.deviceName}" />
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	
+
+
 	<div class="ui container right aligned">
 		<div class="ui toggle checkbox" id="downtf">
 			<input type="checkbox" name="public">
@@ -29,81 +29,74 @@
 		</div>
 	</div>
 	<div class="ui right aligned fluid container">
-		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</button>
+		<button class="ui button" id="btnReg" onclick="showRegisterPopModal()">등록하기</button>
 	</div>
 
 
-	<div id="registerPop" style="display: none;">
-		<div class="ui fluid conatainer">
-			<div class="ui grid" style="padding-top: 30px;">
-				<div class="three column row">
-					<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">
-						<form class="ui form" id="Form">
+	<div id="registerPop" class="ui modal">
+		<div class="ui grid">
+			<div class="column" style="background-color:antiquewhite; padding: 30px;">
+				<form class="ui form" id="Form">
+					<div class="field">
+						<label>박물관 이름</label>
+						<input type="text" placeholder="박물관 이름을 입력해주세요" name="museumName">
+					</div>
+					<div class="field">
+						<label>박물관 전화번호</label>
+						<input type="text" placeholder="박물관 전화번호를 입력해주세요" name="museumTel">
+					</div>
+					<div class="field">
+						<label>박물관 위치</label>
+						<input type="text" placeholder="박물관 위치를 입력해주세요" name="museumLoc">
+					</div>
 
+					<div class="field">
+						<label>박물관 로고</label>
+						<input type="file" placeholder="박물관 로고를 선택해주세요" name="file"
+							onchange="previewImage(this,'thumbnailMul','300px','150px')" accept="image/*" />
+					</div>
+					<div id="thumbnailMul" style="padding-top:5px;"></div>
+					<div id="thumbnail" style="padding-top:5px;"></div>
+					<div class="field">
+						<label>적용 디바이스</label>
+						<div class="ui multiple selection dropdown">
+							<!-- This will receive comma separated value like OH,TX,WY !-->
+							<input name="deviceSeq" type="hidden">
+							<i class="dropdown icon"></i>
+							<div class="default text">States</div>
+							<div class="menu">
+								<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
+									<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
+									<span th:text="${dev.deviceName}" />
 
-							<div class="field">
-								<label>박물관 이름</label>
-								<input type="text" placeholder="박물관 이름을 입력해주세요" name="museumName">
-							</div>
-							<div class="field">
-								<label>박물관 전화번호</label>
-								<input type="text" placeholder="박물관 전화번호를 입력해주세요" name="museumTel">
-							</div>
-							<div class="field">
-								<label>박물관 위치</label>
-								<input type="text" placeholder="박물관 위치를 입력해주세요" name="museumLoc">
-							</div>
-
-							<div class="field">
-								<label>박물관 로고</label>
-								<input type="file" placeholder="박물관 로고를 선택해주세요" name="file"
-									onchange="previewImage(this,'thumbnailMul','300px','150px')" accept="image/*" />
-							</div>
-							<div id="thumbnailMul" style="padding-top:5px;"></div>
-							<div id="thumbnail" style="padding-top:5px;"></div>
-							<div class="field">
-								<label>적용 디바이스</label>
-								<div class="ui multiple selection dropdown">
-									<!-- This will receive comma separated value like OH,TX,WY !-->
-									<input name="deviceSeq" type="hidden">
-									<i class="dropdown icon"></i>
-									<div class="default text">States</div>
-									<div class="menu">
-										<div th:each="dev : ${devicelist}" class="item"
-											th:attr="data-value=${dev.deviceSeq}">
-											<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
-											<span th:text="${dev.deviceName}" />
-
-										</div>
-									</div>
 								</div>
 							</div>
-
-						</form>
-
-
-
-						<div class="ui right aligned container" style="padding-top: 30px;">
-							<button class="ui button" id="btnSubmit" onclick="fnSubmit()">저장하기</button>
-							<button class="ui button" id="btnInvisible" onclick="hideRegisterPop()">취소하기</button>
 						</div>
+					</div>
+				</form>
+				<div class="ui right aligned container" style="padding-top: 30px;">
+					<div class="actions">
+						<button class="ui button" id="btnSubmit" onclick="fnSubmit()">저장하기</button>
+						<button class="ui cancel button" id="btnInvisible" onclick="hideRegisterPop()">취소하기</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 	<div id="gettable"></div>
-	
-
-
 </div>
+
+
+
+
 
 </html>
 <script>
+	
+
 	$(function () {
-		$('.ui.dropdown').dropdown();
-		fngetListHTML('onload');
+		
+		
 		$('#downtf').checkbox({
 			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
 			onUnchecked: function () {$("span.downdatas").hide();},

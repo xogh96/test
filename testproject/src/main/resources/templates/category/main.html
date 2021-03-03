@@ -4,14 +4,14 @@
 <div class="thirteen wide column" layout:fragment="content">
 
 	<div class="left aligned ui fluid container">
-		<label>박물관 조회</label> 
+		<label>박물관 조회</label>
 		</br>
-		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
-			<input type="hidden" name="museumSeq">
+		<div class="ui selection dropdown" onchange="fngetListHTML()">
+			<input type="hidden" name="museumSeq" id="getlistdata">
 			<i class="dropdown icon"></i>
 			<div class="default text">전체 목록</div>
 			<div class="menu" id="datas">
-				<div class="item" th:attr="data-value='all'">전체 목록</div>
+				<div class="item" th:attr="data-value=-1">전체 목록</div>
 				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}">
 					<span th:text="${mus.museumName}" />
 				</div>
@@ -20,46 +20,47 @@
 	</div>
 
 	<div class="ui right aligned fluid container">
-		<button class="ui button" id="btnReg" onclick="showRegisterPop()">등록하기</a>
+		<button class="ui button" id="btnReg" onclick="showRegisterPopModal()">등록하기</a>
 	</div>
-	<div id="registerPop" style="display: none;">
-		<div class="ui grid" style="padding-top: 30px;">
-			<div class="three column row">
-				<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">
-					<form class="ui form" id="Form">
-						<div class="field">
-							<label>적용 박물관</label>
-							<div class="ui selection dropdown">
-								<input type="hidden" name="museumSeq" onchange="getlist(this)">
-								<i class="dropdown icon"></i>
-								<div class="default text">적용 박물관을 선택해주세요</div>
-								<div class="menu" id="datas">
-									<div th:each="mus : ${museumlist}" class="item"
-										th:attr="data-value=${mus.museumSeq}">
-										<span th:text="${mus.museumName}" />
-									</div>
+	<div id="registerPop" class="ui modal">
+		<div class="ui grid">
+			<div class="column" style="background-color:antiquewhite; padding: 30px;">
+				<form class="ui form" id="Form">
+					<div class="field">
+						<label>적용 박물관</label>
+						<div class="ui selection dropdown">
+							<input type="hidden" name="museumSeq" onchange="getlist(this)">
+							<i class="dropdown icon"></i>
+							<div class="default text">적용 박물관을 선택해주세요</div>
+							<div class="menu" id="datas">
+								<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}">
+									<span th:text="${mus.museumName}" />
 								</div>
 							</div>
 						</div>
-						<div class="field">
-							<label>적용 디바이스</label>
-							<div class="ui selection dropdown">
-								<input type="hidden" name="deviceSeq">
-								<i class="dropdown icon"></i>
-								<div class="default text">적용 디바이스를 선택해주세요</div>
-								<div class="menu" id="devicedatas">
-								</div>
+					</div>
+					<div class="field">
+						<label>적용 디바이스</label>
+						<div class="ui selection dropdown">
+							<input type="hidden" name="deviceSeq">
+							<i class="dropdown icon"></i>
+							<div class="default text">적용 디바이스를 선택해주세요</div>
+							<div class="menu" id="devicedatas">
 							</div>
 						</div>
-						<div class="field"><label>카테고리 이름</label>
-							<input type="text" label="카테고리 이름" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
-								maxlength="10"></div>
-					</form>
-					<div id="thumbnailMul" style="padding-top:5px;"></div>
-					<div id="thumbnail" style="padding-top:5px;"></div>
-					<div class="ui right aligned container" style="padding-top: 30px;"><button class="ui button"
-							id="btnSubmit" onclick="fnSubmit()">저장하기</button><button class="ui button" id="btnInvisible"
-							onclick="hideRegisterPop()">취소하기</button></div>
+					</div>
+					<div class="field"><label>카테고리 이름</label>
+						<input type="text" label="카테고리 이름" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
+							maxlength="10">
+					</div>
+				</form>
+				<div id="thumbnailMul" style="padding-top:5px;"></div>
+				<div id="thumbnail" style="padding-top:5px;"></div>
+				<div class="ui right aligned container" style="padding-top: 30px;">
+					<div class="actions">
+						<button class="ui button" id="btnSubmit" onclick="fnSubmit()">저장하기</button>
+						<button class="ui cancel button" id="btnInvisible" onclick="hideRegisterPop()">취소하기</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -91,7 +92,9 @@
 
 
 	$(function () {
-		$('.ui.dropdown').dropdown();
-		fngetListHTML('onload');
+		
+		
+		
+		
 	});
 </script>

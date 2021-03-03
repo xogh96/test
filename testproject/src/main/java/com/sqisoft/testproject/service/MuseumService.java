@@ -209,7 +209,7 @@ public class MuseumService
 		// 가져온 file을 saveFile로 transferTo해준다 (가져온 file에 설정해놓은 savefile로 받은파일을 씌워주는 과정)
 		file.transferTo(saveFile);
 
-		Thumbnails.of(saveFile).size(150, 150).toFile(saveThumbFile);
+		Thumbnails.of(saveFile).size(300, 100).toFile(saveThumbFile);
 
 		// dto에 넣어준다
 		deviceDto.setFileContentType(contentType);

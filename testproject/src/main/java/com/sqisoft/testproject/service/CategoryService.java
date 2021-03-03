@@ -73,7 +73,7 @@ public class CategoryService
 	public boolean insertOne(CategoryDto categoryDto)
 	{
 		if(categoryDto.getDeviceSeq()==null || categoryDto.getMuseumSeq()==null) {
-			throw new SqiException("데이터를 모두 입력해주세요");
+			throw new SqiException("모든 정보를 입력해주세요");
 		}
 		
 		MuseumEntity museumEntity = new MuseumEntity();

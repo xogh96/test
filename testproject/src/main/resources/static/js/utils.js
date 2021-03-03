@@ -1,22 +1,4 @@
 /**
- * id의 값을 2개 넣으면 그 값을 비교 해주는 function
- * @param string
- * @param string
- * @return boolean
- */
-function th_compare(first, second) {
-
-	firstval = $("#" + first).val();
-	secondval = $("#" + second).val();
-
-	if (firstval == null || secondval == null) return false;
-	if (firstval == secondval) return true;
-	else return false;
-}
-
-
-
-/**
  * ajax 하는 function
  * 
  */
@@ -150,72 +132,73 @@ function previewImageMul(f, thumbnailId, width, height , text) {
 			// 파일을 읽는다
 			reader.readAsDataURL(f.files[i]);
 			// 파일 읽기가 완료되었을때 실행
+			if(!f.files[i].type.startsWith('video')){
 			reader.onload = function(e) {
-				
-				
-				let ddv = '<div >';
-				let img = '<img src="'+e.target.result+'" width="'+width+'" height="'+height+'" alt="동영상 미리보기는 아직 구현되지 않았습니다">';
-				ddv+=img;				
-				let str = '</br><h2 class="ui header" style="display:inline;">작품명 : '+text+'</h2>'
-					+'&nbsp;&nbsp;&nbsp;&nbsp;<button class="ui primary basic button" value="'+contentarray.length+'" onclick="delcon(this)">'
-					+'<i class="trash icon"></i></button></div>';
-				ddv+=str;
+					let ddv = `
+				<div class="three wide column" >
+						<div class="ui fade reveal">
+							<div class="visible content">
+								<img src="${e.target.result}" width="${width}" height="${height}"
+								onmouseover="$('.circular.button').show();" 
+								onmouseleave="$('.circular.button').hide();"/>
+							</div>
+							<div class="hidden content" >
+								<img data-src="holder.js/200x180?bg=2a2025&amp;size=15&amp;text=${text}"/>
+								
+							</div>
+							<button id="btndelcon" class="circular ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
+							style="display:none ; position:absolute; top:10px; left:155px; z-index:999 " 
+							onmouseover="$('.circular.button').show();"
+							>
+								<i class="x icon"></i>
+							</button>
+						</div>
+						
+				</div>
+				`;
 				$('#' + thumbnailId).append(ddv);
+				Holder.run({});
+				}
+			}else{
+				reader.onload = function(e) {
+					
+					
+										
+					let ddv = `
+				<div class="three wide column" >
+						<div class="ui fade reveal">
+							<div class="visible content">
+								<video width="${width}" height="${height}"
+								onmouseover="$('.circular.button').show();" 
+								onmouseleave="$('.circular.button').hide();"
+										 controls style="cursor: pointer;">
+											<source src="${e.target.result}"
+													
+											 >
+										</video>
+							</div>
+							<div class="hidden content" >
+								<img data-src="holder.js/200x180?bg=2a2025&amp;size=15&amp;text=${text}"/>
+								
+							</div>
+							<button id="btndelcon" class="circular ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
+							style="display:none ; position:absolute; top:10px; left:155px; z-index:999 " 
+							onmouseover="$('.circular.button').show();"
+							>
+								<i class="x icon"></i>
+							</button>
+						</div>
+						
+				</div>
+				`;
+				$('#' + thumbnailId).append(ddv);
+				Holder.run({});
+				}
 			}
-
 			// 파일을 읽는다
 			//reader.readAsDataURL(f.files[i]);
 		}
 	}
-	
-}
-
-/**
- * 	parameter
- * id : 적용될 div의 id
- * object list : type , label , placeholder , name 등등 -> list length만큼 반복해서 만든다
- * 
- * 생성된 form 의 id 는 Form이다
- * 생성된 버튼의 id 는 btnSubmit이며 form 데이터 가져와서 넣어주기
- */
-function fnRegisterForm(id, objlist) {
-	let dom = $('<div class="ui grid" style="padding-top: 30px;">');
-	let str =
-		'<div class="three column row">' +
-		'<div class="right floated column" style="background-color:antiquewhite; padding: 30px;">' +
-		'<form class="ui form" id="Form">';
-	for (i = 0; i < objlist.length; i++) {
-		str +=
-			'<div class="field">' +
-			'<label>' + objlist[i].label + '</label>' +
-			'<input ';
-
-		for (prop in objlist[i]) {
-			str += prop + "=" + "'" + objlist[i][prop] + "' ";
-		}
-
-		str += '>' +
-			'</div>';
-	}
-	str +=
-		'</form>' +
-		'<div id="thumbnailMul" style="padding-top:5px;"></div>' +
-		'<div id="thumbnail" style="padding-top:5px;"></div>' +
-		'<div class="ui right aligned container" style="padding-top: 30px;">' +
-		'<button class="ui button" id="btnSubmit" onclick="fnSubmit()">저장하기</button>' +
-		'<button class="ui button" id="btnInvisible" onclick="regpage(' + "'" + id + "'" + ')">취소하기</button>' +
-		'</div>' +
-		'</div>' +
-		'</div>';
-	$(str).appendTo(dom);
-	$("#" + id).html(dom);
-	$("#btnReg").hide();
-
-}
-function regpage(id) {
-	$("#btnReg").show();
-	console.log(id);
-	$("#" + id).html("");
 }
 function fnSubmit() {
 	let contextPath = sessionStorage.getItem("contextPath");
@@ -269,45 +252,28 @@ function fnModify(evt) {
 		);
 	}
 }
-
-function showRegisterPop() {
-	$("#registerPop").show();
-}
-
-function hideRegisterPop() {
-	$("#registerPop").hide();
-}
-
 //table을 만들어 주는 함수 html을 받아온다
-function fngetListHTML(e) {
+function fngetListHTML() {
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
-	if(e=='onload'){
-		$.post(contextPath + viewPath + '/getlist/' + -1,
-		function(result) {
-			$("#gettable").html(result);
-		}
-	).fail(
-		function(error) {
-			alert(fnGetErrorMessage(error));
-		});
-	}else{
-	let data = e.childNodes[1].value
-	if (data == 'all') {
-		data = -1;
-	}
-	$.post(contextPath + viewPath + '/getlist/' + data,
-		function(result) {
-			$("#gettable").html(result);
-		}
-	).fail(
-		function(error) {
-			alert(fnGetErrorMessage(error));
-		});
-		}
-		
+	sessionStorage.setItem("currentpage",$("#getlistdata").attr("value"));
 	
-}
+	if(sessionStorage.getItem("currentpage") == 'undefined'){
+		sessionStorage.setItem("currentpage",-1);
+	}
+		$.post(contextPath + viewPath + '/getlist/' + sessionStorage.getItem("currentpage"),
+		function(result) {
+			$("#gettable").html(result);
+			sessionStorage.setItem("currentpage",sessionStorage.getItem("currentpage"));
+			console.log(`CURRENT_PAGE = ${sessionStorage.getItem("currentpage")}`);
+			Holder.run({});
+		}
+	).fail(
+		function(error) {
+			alert(fnGetErrorMessage(error));
+		});
+		
+	}
 
 //전시작품 전용 submit
 function fnExhibitSubmit() {
@@ -386,4 +352,8 @@ function showRegisterPopModal() {
 	$('.ui.modal').modal({
 		inverted: true
 	}).modal('show').modal('setting', 'closable', false);
+}
+
+function currentpageSessionSetDefault(){
+	sessionStorage.setItem("currentpage",-1);
 }

@@ -207,7 +207,7 @@ public class ExhibitService
 				if (StringUtils.startsWith(contentType, "image"))
 				{
 					int start = getCurrentSeconds();
-					Thumbnails.of(saveFile).size(150, 150).toFile(saveThumbFile);
+					Thumbnails.of(saveFile).size(200, 180).toFile(saveThumbFile);
 					int end = getCurrentSeconds();
 					log.debug("썸네일 하나 " + (end - start) + "초");
 					totaltime += (end-start);

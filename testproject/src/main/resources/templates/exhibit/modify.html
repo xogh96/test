@@ -37,21 +37,33 @@
 				</div>
 			</div>
 		</form>
-		<div  style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
-		
-		<div id="thumbnailMul">
-			<div th:each="contentlist,index : ${category.contentEntity}">
-				<img th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="400px"
-					height="200px" alt="동영상 미리보기는 아직 구현되지 않았습니다" /><br />
-				<h2 class="ui header" style="display:inline;" th:text="'작품명 : '+${contentlist.contentName}">작품명</h2>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<button class="ui primary basic button" th:value="${index.index+1}" th:attr="data-del=${contentlist.contentSeq}"
-				 onclick="delcon(this)">
-					<i class="trash icon"></i></button>
+		<div style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
+
+		<div id="thumbnailMul" class="ui grid conatiner">
+			<div class="three wide column" th:each="contentlist,index : ${category.contentEntity}">
+
+				<div class="ui fade reveal">
+					<div class="visible content">
+
+						<img th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="200px"
+							height="180px"  onmouseover="$('.circular.button').show();"
+							onmouseleave="$('.circular.button').hide();" />
+
+					</div>
+					<div class="hidden content">
+						<img
+							th:attr="data-src=${'holder.js/200x180?bg=2a2025&amp;size=15&amp;text=' + contentlist.contentName}" />
+					</div>
+
+					<button id="btndelcon" class="circular ui icon button" th:value="${index.index+1}"
+						onclick="delcon(this)"
+						style="display:none ; position:absolute; top:10px; left:155px; z-index:999 "
+						th:attr="data-del=${contentlist.contentSeq}" onmouseover="$('.circular.button').show();">
+						<i class="x icon"></i>
+					</button>
+				</div>
 			</div>
 		</div>
-
-
 		<div class="ui modal">
 			<div class="header">작품명을 입력 해주세요</div>
 			<div class="image content">
@@ -75,28 +87,30 @@
 			</div>
 		</div>
 	</div>
-	<button class="ui button" onclick="fnExhibitModify()">저장하기</button>
+	<div style="padding-top : 30px;">
+		<button class="ui button" onclick="fnExhibitModify()">저장하기</button>
+	</div>
 </div>
 
 </html>
 <script>
 	const filearray = [];
 	const contentarray = [];
-	const deletearray=[];
+	const deletearray = [];
 	$(function () {
-		
+
 		let contextPath = sessionStorage.getItem("contextPath");
 		let viewPath = sessionStorage.getItem("viewPath");
 		/*<![CDATA[*/
-			let categoryseq = "[[${category.categorySeq}]]";
+		let categoryseq = "[[${category.categorySeq}]]";
 		/*]]>*/
 		$.ajax({
-			type:'post',
-			url:contextPath+"/file/imageView/"+categoryseq,
-			data:'json',
-			success:function(data){
-				
-				for(i=0;i<data[0].length;i++){
+			type: 'post',
+			url: contextPath + "/file/imageView/" + categoryseq,
+			data: 'json',
+			success: function (data) {
+
+				for (i = 0; i < data[0].length; i++) {
 					filearray.push(data[0][i]);
 					contentarray.push(data[1][i]);
 				}
@@ -104,12 +118,12 @@
 				console.log(contentarray);
 				$("#howmany").text(filearray.length);
 			},
-			error:function(error){
+			error: function (error) {
 				alert(fnGetErrorMessage(error));
 			}
 		});
-		
-		
+
+
 		//입력되면 disabled 속성 없애주는 함수
 		$("#contentName").on("change keyup paste", function () {
 			if ($(this).val() != "") {
@@ -145,7 +159,7 @@
 			contentarray.push($("#contentName").val());
 			console.log(contentarray);
 			console.log(filearray);
-			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '400px', '200px', $("#contentName").val());
+			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '200px', '180px', $("#contentName").val());
 
 			$("#contentName").val("");
 			$("#confirm").addClass("disabled");
@@ -160,11 +174,11 @@
 		});
 	});
 	function delcon(e) {
-		if(e.dataset.del!=null){
+		if (e.dataset.del != null) {
 			deletearray.push(e.dataset.del);
 		}
-		
-		$("#thumbnailMul div:nth-child(" + e.value + ")").remove();
+
+		$("#thumbnailMul div.column:nth-child(" + e.value + ")").remove();
 		contentarray.splice([e.value - 1], 1);
 		filearray.splice([e.value - 1], 1);
 		for (i = e.value - 1; i < $("#thumbnailMul").find('button').length; i++) {
@@ -172,7 +186,7 @@
 		}
 		console.log(filearray);
 		console.log(contentarray);
-		console.log("deletearray = "+ deletearray);
+		console.log("deletearray = " + deletearray);
 		$("#howmany").text(filearray.length);
 	}
 </script>

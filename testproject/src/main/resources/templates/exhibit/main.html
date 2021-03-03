@@ -7,12 +7,12 @@
 	<div class="left aligned ui fluid container">
 		<label>박물관 조회</label>
 		</br>
-		<div class="ui selection dropdown" onchange="fngetListHTML(this)">
-			<input type="hidden" name="museumSeq">
+		<div class="ui selection dropdown" onchange="fngetListHTML()">
+			<input type="hidden" name="museumSeq" id="getlistdata">
 			<i class="dropdown icon"></i>
 			<div class="default text">전체 목록</div>
 			<div class="menu" id="datas">
-				<div class="item" th:attr="data-value='all'">전체 목록</div>
+				<div class="item" th:attr="data-value=-1">전체 목록</div>
 				<div th:each="mus : ${museumlist}" class="item" th:attr="data-value=${mus.museumSeq}">
 					<span th:text="${mus.museumName}" />
 				</div>
@@ -20,7 +20,7 @@
 		</div>
 		<div class="ui container right aligned">
 			<div class="ui toggle checkbox" id="downtf">
-			
+
 				<input type="checkbox" name="public">
 				<label>다운로드 받기</label>
 			</div>
@@ -36,13 +36,9 @@
 </html>
 <script>
 	$(function () {
-		$('.ui.dropdown').dropdown();
-		fngetListHTML('onload');
-
 		$('#downtf').checkbox({
 			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
 			onUnchecked: function () {$("span.downdatas").hide();},
 		});
-
 	});
 </script>
