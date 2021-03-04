@@ -28,36 +28,35 @@
 								th:text="${'등록된 작품 ['+catlist.contentEntity.size+']'}" style="color:red;"></span>
 							<span th:if="${catlist.contentEntity.size == 0}" style="color:red;">작품을 먼저 등록해주세요</span>
 						</div>
-						<div class="content ui grid" style="padding:15px; width:1200px;">
+						<div class="content ui grid" style="padding:15px; width:1200px;" >
 							<div th:each="contentlist : ${catlist.contentEntity}" style="padding-bottom: 30px;"
 								class="three wide column">
 								<div class="ui fade reveal">
 									<div class="visible content">
-										<!--비디오 넣기-->
-										<video th:if="${#strings.contains(contentlist.contentFileEntity.fileContentType,'video')}"width="200px" height="180px"
-										 controls style="cursor: pointer;">
-											<source th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" 
-													th:type="${contentlist.contentFileEntity.fileContentType}"
-											 >
-										</video>
+										
 										<img
-											th:if="${#strings.contains(contentlist.contentFileEntity.fileContentType,'image')}"
 											th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="200px" height="180px"
-											alt="이미지가 존재하지 않습니다" />
+											alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white"
+											onmouseover="$('.circular.button').show();" 
+											onmouseleave="$('.circular.button').hide();"
+											 />
 								 	</div>
 									<div class="hidden content">
 	    								<img th:attr="data-src=${'holder.js/200x180?bg=2a2025&amp;size=15&amp;text=' + contentlist.contentName}"/>
+										
+										
 	  								</div>
-								</div>
-								<div class="center aligned">
-									<span style="display: none;" class="downdatas">
-										<button class="primary basic ui icon button" 
+										<button class="circular blue ui icon button" 
 										th:value="${'/admin/file/download/' + contentlist.contentFileEntity.fileSeq}"
-										onclick="fndownloadfile(this)">
-										<i class="download icon"></i>다운로드
+										onclick="fndownloadfile(this)"
+										style="position: absolute; top:10px; left: 10px; z-index: 999; display: none;"
+										onmouseover="$('.circular.button').show();" 
+										>
+										<i class="download white icon"></i>
 										</button>
-									</span>
+									
 								</div>
+									
 							</div>
 						</div>
 					</div>

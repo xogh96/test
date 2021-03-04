@@ -79,6 +79,7 @@ public class ExhibitController
 	@PostMapping("/getlist/{museumSeq}")
 	public String selectlist(@PathVariable Integer museumSeq , Model model) throws IOException
 	{
+		log.debug("getlist 가 호출되었음");
 		if(museumSeq==-1) {
 			model.addAttribute("categorylist",categoryService.selectAll()); 
 			return "/exhibit/table";

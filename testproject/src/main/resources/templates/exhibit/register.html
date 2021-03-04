@@ -27,18 +27,22 @@
 			<div class="two fields">
 				<div class="field">
 					<label>전시작품 (최대 10개까지만 가능합니다)</label>
-					<input type="file" placeholder="박물관 로고를 선택해주세요" name="" id="fileinfos"  accept="image/* , video/*" />
+					<input type="file" placeholder="박물관 로고를 선택해주세요" name="" id="fileinfos" accept="image/* , video/*" />
 				</div>
 			</div>
 		</form>
-		<div  style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
+		<div style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
 		<div id="thumbnailMul" class="ui grid conatiner"></div>
 
 
 		<div class="ui modal">
 			<div class="header">작품명을 입력 해주세요</div>
 			<div class="image content">
-				<img class="image" id="contimage" style="width: 400px; height:400px; ">
+				<img class="image" id="contimage" style="width: 400px; height:400px; " />
+
+				<video  id="contvideo"  style="width: 400px; height:400px;" autoplay muted>
+					<source id="contvideocontent">
+				</video>
 				<div class="ui container">
 					<div class="description" style="padding: 30px;">
 						<p>
@@ -85,20 +89,36 @@
 		//파일이 바뀌면 array에 추가해주는 함수
 		$("#fileinfos").change(function (event) {
 			if (event.target.files[0] != null) {
+
 				$('.ui.modal').modal({
 					inverted: true
 				}).modal('show').modal('setting', 'closable', false);
 
 				var reader = new FileReader();
 				reader.onload = function (e) {
-					$("#contimage").attr('src', e.target.result);
-					$("#contimage").attr('alt', "동영상 미리보기는 아직 구현되지 않았습니다");
+					if (e.target.result.split(';')[0].split(':')[1].startsWith('video')) {
+						$("#contimage").attr('src', '');
+						$("#contimage").hide();
+						$("#contvideocontent").attr('src', e.target.result);
+						
+						$("#contvideo").get(0).load();
+						$("#contvideo").get(0).play();
+						$("#contvideo").show();
+					} else {
+						$("#contvideocontent").attr('src', '');
+						$("#contvideo").hide();
+						$("#contimage").attr('src', e.target.result);
+						$("#contimage").attr('alt', '미리보기가 없습니다 정확한 파일인지 먼저 확인해주세요');
+						$("#contimage").show();
+					}
 				}
 				reader.readAsDataURL($("#fileinfos")[0].files[0]);
 
 				filearray.push(event.target.files[0]);
 				console.log(filearray);
 				$("#howmany").text(filearray.length);
+
+
 			}
 		});
 
@@ -106,7 +126,7 @@
 		$("#confirm").click(function () {
 			contentarray.push($("#contentName").val());
 			console.log(contentarray);
-			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '200px', '180px', $("#contentName").val());
+			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '270px', '180px', $("#contentName").val());
 
 			$("#contentName").val("");
 			$("#confirm").addClass("disabled");

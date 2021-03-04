@@ -43,7 +43,10 @@ public class ExhibitService
 
 	@Value("${content.file-path}")
 	private String contentPath;
-
+	
+	@Value("${content.ffmpeg-path}")
+	private String ffmpegPath;
+	
 	@Autowired
 	private FileUtils fileUtils;
 
@@ -203,6 +206,8 @@ public class ExhibitService
 				// 가져온 file을 saveFile로 transferTo해준다 (가져온 file에 설정해놓은 savefile로 받은파일을 씌워주는 과정)
 				files.get(i).transferTo(saveFile);
 
+				FileInfoDto fileInfoDto = new FileInfoDto();
+				
 				// 이미지 파일 일 때만 썸네일 생성하기
 				if (StringUtils.startsWith(contentType, "image"))
 				{
@@ -211,15 +216,31 @@ public class ExhibitService
 					int end = getCurrentSeconds();
 					log.debug("썸네일 하나 " + (end - start) + "초");
 					totaltime += (end-start);
+					fileInfoDto.setFileThumbPhyName(fileThumbHardName);
 				}
-
 				
-				
+				if(StringUtils.startsWith(contentType, "video")) {
+					log.debug("ffmpegpath = " + ffmpegPath);
+					Runtime run = Runtime.getRuntime();
+					String input = saveFile.getCanonicalPath();
+					String output = saveThumbFile.getCanonicalPath();
+					String vd = String.format("%s -i \"%s\" -r 8 -s 200x180 \"%s.gif\"", ffmpegPath , input , output);
+					try {
+						run.exec("cmd.exe chcp 65001");
+						log.debug(vd);
+						Process process = run.exec(vd);
+						process.waitFor();
+						fileInfoDto.setFileThumbPhyName(fileThumbHardName+".gif");
+					}catch(Exception e) {
+						log.debug(e.toString());
+						throw new SqiException("동영상 썸네일 생성 실패했습니다 다시 확인해주세요"); 
+					}
+				}
 				// dto에 넣어준다
-				FileInfoDto fileInfoDto = new FileInfoDto();
+				
 				fileInfoDto.setFileName(files.get(i).getOriginalFilename());
 				fileInfoDto.setFilePhyName(fileHardName);
-				fileInfoDto.setFileThumbPhyName(fileThumbHardName);
+				//fileInfoDto.setFileThumbPhyName(fileThumbHardName);
 				fileInfoDto.setFileSize(files.get(i).getSize());
 				fileInfoDto.setFileContentType(contentType);
 				fileInfoDto.setFileOrder(i);

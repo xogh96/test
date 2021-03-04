@@ -42,7 +42,7 @@ public class CategoryEntity
 	@Column(name = "cate_nm", columnDefinition = "VARCHAR(100) COMMENT '카테고리_이름' ")
 	private String categoryName;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_tb_category_1"))
 	@JsonManagedReference
 	private MuseumEntity museumEntity;

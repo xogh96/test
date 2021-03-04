@@ -8,9 +8,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.gson.Gson;
 import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.ContentEntity;
@@ -83,10 +80,6 @@ public class FileController
 	{
 		ContentFileEntity contentFileEntity = contentFileRepo.findById(contentSeq).orElse(null);
 		Path path = Paths.get(contentPath + File.separator + "thumb" + File.separator + contentFileEntity.getFileThumbPhyName());
-		if (StringUtils.startsWith(contentFileEntity.getFileContentType(), "video"))
-		{
-			path = Paths.get(contentPath + File.separator + contentFileEntity.getFilePhyName());
-		}
 		Resource resource = null;
 		try
 		{

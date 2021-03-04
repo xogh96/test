@@ -122,83 +122,93 @@ function previewImage(f, thumbnailId, width, height) {
 	}
 }
 //썸네일 여러개 넣기
-function previewImageMul(f, thumbnailId, width, height , text) {
-	
+function previewImageMul(f, thumbnailId, width, height, text) {
+	let image = null;
 	if (f.files && f.files[0]) {
 		// FileReader 객체 사용
 		for (i = 0; i < f.files.length; i++) {
 			var reader = new FileReader();
-			
+
 			// 파일을 읽는다
 			reader.readAsDataURL(f.files[i]);
 			// 파일 읽기가 완료되었을때 실행
-			if(!f.files[i].type.startsWith('video')){
+
+			if (!f.files[i].type.startsWith('video')) {
+				image = true;
+			} else {
+				image = false;
+			}
+
 			reader.onload = function(e) {
-					let ddv = `
-				<div class="three wide column" >
-						<div class="ui fade reveal">
-							<div class="visible content">
+				let ddv = `
+						<div class="three wide column" >
+							<div class="ui fade reveal">`;
+
+				if (image) {
+					ddv += `<div class="visible content">
 								<img src="${e.target.result}" width="${width}" height="${height}"
 								onmouseover="$('.circular.button').show();" 
-								onmouseleave="$('.circular.button').hide();"/>
+								onmouseleave="$('.circular.button').hide();"
+								alt="이미지 또는 동영상만 올려주세요" style="color:white"/>
 							</div>
-							<div class="hidden content" >
-								<img data-src="holder.js/200x180?bg=2a2025&amp;size=15&amp;text=${text}"/>
-								
-							</div>
-							<button id="btndelcon" class="circular ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
-							style="display:none ; position:absolute; top:10px; left:155px; z-index:999 " 
-							onmouseover="$('.circular.button').show();"
-							>
-								<i class="x icon"></i>
-							</button>
-						</div>
-						
-				</div>
-				`;
-				$('#' + thumbnailId).append(ddv);
-				Holder.run({});
+							
+							`;
+
 				}
-			}else{
-				reader.onload = function(e) {
-					
-					
-										
-					let ddv = `
-				<div class="three wide column" >
-						<div class="ui fade reveal">
-							<div class="visible content">
+				else {
+					ddv += `<div class="visible content">
 								<video width="${width}" height="${height}"
 								onmouseover="$('.circular.button').show();" 
 								onmouseleave="$('.circular.button').hide();"
-										 controls style="cursor: pointer;">
-											<source src="${e.target.result}"
-													
-											 >
+										  autoplay muted >
+											<source src="${e.target.result}">
 										</video>
-							</div>
+							</div>`;
+				}
+
+				ddv += `
 							<div class="hidden content" >
-								<img data-src="holder.js/200x180?bg=2a2025&amp;size=15&amp;text=${text}"/>
+								<img data-src="holder.js/270x180?bg=2a2025&amp;size=15&amp;text=${text}"
+								onmouseover="$('.circular.button').show();"
+								onmouseleave="$('.circular.button').hide();"/>
 								
 							</div>
-							<button id="btndelcon" class="circular ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
-							style="display:none ; position:absolute; top:10px; left:155px; z-index:999 " 
+							<button id="btndelcon" class="circular red ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
+							style="display:none ; position:absolute; top:10px; right:10px; z-index:999 " 
 							onmouseover="$('.circular.button').show();"
 							>
 								<i class="x icon"></i>
 							</button>
+							
+							<form class="ui form">
+							<div class="field">
+								<label>작품명</label>
+								<input type="text" placeholder="작품이름" name="text" data-val = "${contentarray.length}" value= "${text}"
+								onchange="testchange(this)"
+								onkeydown="prevent(this)"/>
+							</div>
+							</form>
 						</div>
 						
 				</div>
 				`;
 				$('#' + thumbnailId).append(ddv);
 				Holder.run({});
-				}
+
 			}
 			// 파일을 읽는다
 			//reader.readAsDataURL(f.files[i]);
 		}
 	}
+}
+function prevent(evt) {
+	if (evt.keyCode === 13) {
+		evt.preventDefault();
+	};
+}
+
+function testchange(evt) {
+	contentarray[evt.dataset.val - 1] = evt.value;
 }
 function fnSubmit() {
 	let contextPath = sessionStorage.getItem("contextPath");
@@ -209,7 +219,7 @@ function fnSubmit() {
 		fnAjaxJsonSendFormFile(contextPath + viewPath + '/add', 'post', datas,
 			function(result) {
 				console.log(result);
-				
+
 				location.replace(contextPath);
 			},
 			function(error) {
@@ -243,7 +253,7 @@ function fnModify(evt) {
 			'/modify/' + $("#" + evt).val(), 'post', datas,
 			function(result) {
 				console.log(result);
-				
+
 				location.replace(contextPath);
 			},
 			function(error) {
@@ -256,15 +266,15 @@ function fnModify(evt) {
 function fngetListHTML() {
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
-	sessionStorage.setItem("currentpage",$("#getlistdata").attr("value"));
-	
-	if(sessionStorage.getItem("currentpage") == 'undefined'){
-		sessionStorage.setItem("currentpage",-1);
+	sessionStorage.setItem("currentpage", $("#getlistdata").attr("value"));
+
+	if (sessionStorage.getItem("currentpage") == 'undefined') {
+		sessionStorage.setItem("currentpage", -1);
 	}
-		$.post(contextPath + viewPath + '/getlist/' + sessionStorage.getItem("currentpage"),
+	$.post(contextPath + viewPath + '/getlist/' + sessionStorage.getItem("currentpage"),
 		function(result) {
 			$("#gettable").html(result);
-			sessionStorage.setItem("currentpage",sessionStorage.getItem("currentpage"));
+			sessionStorage.setItem("currentpage", sessionStorage.getItem("currentpage"));
 			console.log(`CURRENT_PAGE = ${sessionStorage.getItem("currentpage")}`);
 			Holder.run({});
 		}
@@ -272,88 +282,87 @@ function fngetListHTML() {
 		function(error) {
 			alert(fnGetErrorMessage(error));
 		});
-		
-	}
+
+}
 
 //전시작품 전용 submit
 function fnExhibitSubmit() {
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
 	let datas = new FormData($("#Form")[0]);
-	
-	for(i=0;i<filearray.length;i++){
-		datas.append("files",filearray[i]);	
+
+	for (i = 0; i < filearray.length; i++) {
+		datas.append("files", filearray[i]);
 	}
-	
-	datas.append("content",contentarray);
-	
+
+	datas.append("content", contentarray);
+
 	//내용이 비었는지 확인하기
-	
-		fnAjaxJsonSendFormFile(contextPath + viewPath + '/add', 'post', datas,
-			function(result) {
-				console.log(result);
-				location.replace(contextPath);
-			},
-			function(error) {
-				alert(fnGetErrorMessage(error));
-			}
-		);
-	
+
+	fnAjaxJsonSendFormFile(contextPath + viewPath + '/add', 'post', datas,
+		function(result) {
+			console.log(result);
+			location.replace(contextPath);
+		},
+		function(error) {
+			alert(fnGetErrorMessage(error));
+		}
+	);
+
 }
 
 function fnExhibitModify() {
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
 	let datas = new FormData($("#Form")[0]);
-	
-	for(i=0;i<filearray.length;i++){
-		datas.append("files",filearray[i]);	
+
+	for (i = 0; i < filearray.length; i++) {
+		datas.append("files", filearray[i]);
 	}
-	if(deletearray.length>0)
-	{
+	if (deletearray.length > 0) {
 		if (!confirm("기존 데이터에서 변경된 사항이 있습니다 정말 삭제 하시겠습니까?")) {
 			alert("변경 취소되었습니다");
 			return false;
 		}
 	}
-	
-	datas.append("content",contentarray);
-	datas.append("delete",deletearray);
-	
+
+	datas.append("content", contentarray);
+	datas.append("delete", deletearray);
+
 	//내용이 비었는지 확인하기
-	
-		fnAjaxJsonSendFormFile(contextPath + viewPath + '/modify', 'post', datas,
-			function(result) {
-				console.log(result);
-				location.replace(contextPath);
-			},
-			function(error) {
-				alert(fnGetErrorMessage(error));
-			}
-		);
-	
+
+	fnAjaxJsonSendFormFile(contextPath + viewPath + '/modify', 'post', datas,
+		function(result) {
+			console.log(result);
+			location.replace(contextPath);
+		},
+		function(error) {
+			alert(fnGetErrorMessage(error));
+		}
+	);
+
 }
 
 function fndownloadfile(e) {
 	$.ajax({
 		url: e.value,
-		type: 'get', 
-		dataType : "html",
-		success:function(jqXHR){
+		type: 'get',
+		dataType: "html",
+		success: function(jqXHR) {
 			location.href = e.value;
 		},
-		error:function(jqXHR) {
-		alert(JSON.parse(jqXHR.responseText).message);
-	},
+		error: function(jqXHR) {
+			alert(JSON.parse(jqXHR.responseText).message);
+		},
 	});
 }
-	
+
 function showRegisterPopModal() {
 	$('.ui.modal').modal({
 		inverted: true
 	}).modal('show').modal('setting', 'closable', false);
 }
 
-function currentpageSessionSetDefault(){
-	sessionStorage.setItem("currentpage",-1);
+function currentpageSessionSetDefault() {
+	sessionStorage.setItem("currentpage", -1);
 }

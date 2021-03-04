@@ -44,20 +44,21 @@
 
 				<div class="ui fade reveal">
 					<div class="visible content">
-
-						<img th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="200px"
+						
+						<img
+							th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="270px"
 							height="180px"  onmouseover="$('.circular.button').show();"
-							onmouseleave="$('.circular.button').hide();" />
+							onmouseleave="$('.circular.button').hide();" alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white" />
 
 					</div>
 					<div class="hidden content">
 						<img
-							th:attr="data-src=${'holder.js/200x180?bg=2a2025&amp;size=15&amp;text=' + contentlist.contentName}" />
+							th:attr="data-src=${'holder.js/270x180?bg=2a2025&amp;size=15&amp;text=' + contentlist.contentName}" />
 					</div>
 
-					<button id="btndelcon" class="circular ui icon button" th:value="${index.index+1}"
+					<button id="btndelcon" class="circular red ui icon button" th:value="${index.index+1}"
 						onclick="delcon(this)"
-						style="display:none ; position:absolute; top:10px; left:155px; z-index:999 "
+						style="display:none ; position:absolute; top:10px; right:10px; z-index:999 "
 						th:attr="data-del=${contentlist.contentSeq}" onmouseover="$('.circular.button').show();">
 						<i class="x icon"></i>
 					</button>
@@ -67,7 +68,13 @@
 		<div class="ui modal">
 			<div class="header">작품명을 입력 해주세요</div>
 			<div class="image content">
-				<img class="image" id="contimage" style="width: 400px; height:400px; ">
+				<img class="image" id="contimage" style="width: 400px; height:400px; " >
+				
+				<video  id="contvideo" autoplay muted style=" width: 400px; height:400px;" >
+					<source id="contvideocontent">
+				</video>
+				
+				
 				<div class="ui container">
 					<div class="description" style="padding: 30px;">
 						<p>
@@ -97,6 +104,7 @@
 	const filearray = [];
 	const contentarray = [];
 	const deletearray = [];
+	
 	$(function () {
 
 		let contextPath = sessionStorage.getItem("contextPath");
@@ -143,8 +151,21 @@
 
 				var reader = new FileReader();
 				reader.onload = function (e) {
-					$("#contimage").attr('src', e.target.result);
-					$("#contimage").attr('alt', "동영상 미리보기는 아직 구현되지 않았습니다");
+					if (e.target.result.split(';')[0].split(':')[1].startsWith('video')) {
+						$("#contimage").attr('src', '');
+						$("#contimage").hide();
+						$("#contvideocontent").attr('src', e.target.result);
+						
+						$("#contvideo").get(0).load();
+						$("#contvideo").get(0).play();
+						$("#contvideo").show();
+					} else {
+						$("#contvideocontent").attr('src', '');
+						$("#contvideo").hide();
+						$("#contimage").attr('src', e.target.result);
+						$("#contimage").attr('alt', '미리보기가 없습니다 정확한 파일인지 먼저 확인해주세요');
+						$("#contimage").show();
+					}
 				}
 				reader.readAsDataURL($("#fileinfos")[0].files[0]);
 
@@ -159,7 +180,7 @@
 			contentarray.push($("#contentName").val());
 			console.log(contentarray);
 			console.log(filearray);
-			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '200px', '180px', $("#contentName").val());
+			previewImageMul($("#fileinfos")[0], 'thumbnailMul', '270px', '180px', $("#contentName").val());
 
 			$("#contentName").val("");
 			$("#confirm").addClass("disabled");

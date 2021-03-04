@@ -29,6 +29,7 @@ $(function() {
 
 	$('input[type="text"]').keydown(function(event) {
 		if (event.keyCode === 13) {
+			console.log("엔터불가능");
 			event.preventDefault();
 		};
 	});
@@ -42,8 +43,6 @@ $(function() {
 			fngetListHTML();
 		}
 	}
-
-
 
 }).ajaxStart(function() {
 	$("#loadingpage").show();

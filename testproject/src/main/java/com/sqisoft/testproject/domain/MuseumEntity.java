@@ -70,7 +70,7 @@ public class MuseumEntity implements Serializable
   				inverseJoinColumns = @JoinColumn(name = "dev_seq") )
   	private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
 
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "file_seq", referencedColumnName = "file_seq", foreignKey = @ForeignKey(name = "fk_tb_museum_2"))
 	@JsonManagedReference
 	private ContentFileEntity contentFileEntity;
