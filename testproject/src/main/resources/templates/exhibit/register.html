@@ -146,6 +146,7 @@
 		filearray.splice([e.value - 1], 1);
 		for (i = e.value - 1; i < $("#thumbnailMul").find('button').length; i++) {
 			$("#thumbnailMul").find('button')[i].value -= 1;
+			$("#thumbnailMul").find('.cname')[i].dataset.val -= 1;
 		}
 		$("#howmany").text(filearray.length);
 

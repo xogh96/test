@@ -101,9 +101,20 @@ public class ExhibitService
 	@Transactional
 	public boolean modify(Integer categorySeq, String[] content, MultipartHttpServletRequest mRequest) throws IOException
 	{
+		for (int i = 0; i < content.length; i++)
+		{
+			log.debug(content[i]);
+		}
+		
 		CategoryEntity categoryEntity = categoryRepository.findById(categorySeq).orElse(null);
 		ContentEntity savedEntity = new ContentEntity();
 
+		for (int i = 0; i < content.length - mRequest.getFiles("files").size(); i++)
+		{
+			categoryEntity.getContentEntity().get(i).setContentName(content[i]);
+			categoryRepository.save(categoryEntity);
+		}
+		
 		List<MultipartFile> realfile = new ArrayList<MultipartFile>();
 		List<String> realcontent = new ArrayList<String>();
 
@@ -113,6 +124,7 @@ public class ExhibitService
 		}
 		for (int j = content.length - 1; j >= content.length - mRequest.getFiles("files").size(); j--)
 		{
+			log.debug("helloworld");
 			realcontent.add(content[j]);
 		}
 
@@ -120,6 +132,8 @@ public class ExhibitService
 
 		List<FileInfoDto> filelist = setFileInfos(realfile, categoryEntity);
 
+		
+		
 		// 바뀐거저장
 		for (int i = 0; i < realcontent.size(); i++)
 		{
@@ -129,7 +143,7 @@ public class ExhibitService
 			ContentFileEntity contentFileEntity = new ContentFileEntity();
 
 			contentFileEntity.setFileContentType(filelist.get(i).getFileContentType());
-			contentFileEntity.setFileName(filelist.get(i).getFileName());
+			contentFileEntity.setFileName(filelist.get(i).getFileName());  
 			contentFileEntity.setFileOrder(filelist.get(i).getFileOrder());
 			contentFileEntity.setFilePhyName(filelist.get(i).getFilePhyName());
 			contentFileEntity.setFileSize(filelist.get(i).getFileSize());
@@ -162,7 +176,7 @@ public class ExhibitService
 
 		int exist = categoryEntity.getContentEntity().size();
 		if (exist + files.size() > 10)
-		{
+		{ 
 			throw new SqiException("작품의 최대 갯수는 10개 입니다");
 		}
 
@@ -224,7 +238,7 @@ public class ExhibitService
 					Runtime run = Runtime.getRuntime();
 					String input = saveFile.getCanonicalPath();
 					String output = saveThumbFile.getCanonicalPath();
-					String vd = String.format("%s -i \"%s\" -r 8 -s 200x180 \"%s.gif\"", ffmpegPath , input , output);
+					String vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath , input , output);
 					try {
 						run.exec("cmd.exe chcp 65001");
 						log.debug(vd);

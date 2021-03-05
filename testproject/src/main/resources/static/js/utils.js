@@ -147,8 +147,8 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 				if (image) {
 					ddv += `<div class="visible content">
 								<img src="${e.target.result}" width="${width}" height="${height}"
-								onmouseover="$('.circular.button').show();" 
-								onmouseleave="$('.circular.button').hide();"
+								onmouseover="fnmouseover(this)" 
+											onmouseleave="fnmouseleave(this)"
 								alt="이미지 또는 동영상만 올려주세요" style="color:white"/>
 							</div>
 							
@@ -158,8 +158,8 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 				else {
 					ddv += `<div class="visible content">
 								<video width="${width}" height="${height}"
-								onmouseover="$('.circular.button').show();" 
-								onmouseleave="$('.circular.button').hide();"
+								onmouseover="fnmouseover(this)" 
+											onmouseleave="fnmouseleave(this)"
 										  autoplay muted >
 											<source src="${e.target.result}">
 										</video>
@@ -168,28 +168,32 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 
 				ddv += `
 							<div class="hidden content" >
-								<img data-src="holder.js/270x180?bg=2a2025&amp;size=15&amp;text=${text}"
-								onmouseover="$('.circular.button').show();"
-								onmouseleave="$('.circular.button').hide();"/>
+								<img data-src="holder.js/270x180?bg=2a2025&amp;text=삭제하기"
+								/>
 								
 							</div>
 							<button id="btndelcon" class="circular red ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
 							style="display:none ; position:absolute; top:10px; right:10px; z-index:999 " 
-							onmouseover="$('.circular.button').show();"
+							onmouseover="fnmouseover(this)" 
 							>
 								<i class="x icon"></i>
 							</button>
-							
-							<form class="ui form">
-							<div class="field">
-								<label>작품명</label>
-								<input type="text" placeholder="작품이름" name="text" data-val = "${contentarray.length}" value= "${text}"
-								onchange="testchange(this)"
-								onkeydown="prevent(this)"/>
-							</div>
-							</form>
 						</div>
 						
+						<div class="ui labeled input" style="width:270px" >
+	
+					 <div class="ui blue label" style="width:25%">
+					    작품명
+					  </div>
+						
+						
+						<div class="ui input" style="width:270px" >
+  							<input type="text" class="cname" placeholder="작품이름" name="text" data-val = "${contentarray.length}" value= "${text}"
+							onkeydown="testchange(this)"
+							onchange="testchange(this)"/>
+						</div>
+								
+								</div>
 				</div>
 				`;
 				$('#' + thumbnailId).append(ddv);
@@ -201,10 +205,11 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 		}
 	}
 }
-function prevent(evt) {
-	if (evt.keyCode === 13) {
-		evt.preventDefault();
-	};
+function fnmouseover(evt){
+	$(evt).parent().parent().find(".circular.button").css("display","inline-block");
+}
+function fnmouseleave(evt){
+	$(evt).parent().parent().find(".circular.button").css("display","none");
 }
 
 function testchange(evt) {
@@ -285,8 +290,21 @@ function fngetListHTML() {
 
 }
 
+//contentarray비었는지 확인하는 function
+function fnemptycontentarray(){
+	for(i=0;i<contentarray.length ; i++){
+		if(contentarray[i] == ''){
+			alert("작품명이 비어있는 작품이 존재합니다 다시 확인해주세요");
+			$("#thumbnailMul").find("input")[i].focus();
+			return true;
+		} 
+	}
+}
 //전시작품 전용 submit
 function fnExhibitSubmit() {
+	if(fnemptycontentarray()){
+		return false;
+	}
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
 	let datas = new FormData($("#Form")[0]);
@@ -308,10 +326,13 @@ function fnExhibitSubmit() {
 			alert(fnGetErrorMessage(error));
 		}
 	);
-
+	
 }
 
 function fnExhibitModify() {
+	if(fnemptycontentarray()){
+		return false;
+	}
 	let contextPath = sessionStorage.getItem("contextPath");
 	let viewPath = sessionStorage.getItem("viewPath");
 	let datas = new FormData($("#Form")[0]);
@@ -325,7 +346,6 @@ function fnExhibitModify() {
 			return false;
 		}
 	}
-
 	datas.append("content", contentarray);
 	datas.append("delete", deletearray);
 

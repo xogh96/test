@@ -47,22 +47,39 @@
 						
 						<img
 							th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="270px"
-							height="180px"  onmouseover="$('.circular.button').show();"
-							onmouseleave="$('.circular.button').hide();" alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white" />
+							height="180px" onmouseover="fnmouseover(this)" 
+											onmouseleave="fnmouseleave(this)" alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white" />
 
 					</div>
 					<div class="hidden content">
 						<img
-							th:attr="data-src=${'holder.js/270x180?bg=2a2025&amp;size=15&amp;text=' + contentlist.contentName}" />
+							th:attr="data-src=${'holder.js/270x180?bg=2a2025&amp;size=15&amp;text=삭제하기'}" />
 					</div>
 
 					<button id="btndelcon" class="circular red ui icon button" th:value="${index.index+1}"
 						onclick="delcon(this)"
 						style="display:none ; position:absolute; top:10px; right:10px; z-index:999 "
-						th:attr="data-del=${contentlist.contentSeq}" onmouseover="$('.circular.button').show();">
+						th:attr="data-del=${contentlist.contentSeq}" onmouseover="fnmouseover(this)" >
 						<i class="x icon"></i>
 					</button>
 				</div>
+				
+				
+					<div class="ui labeled input" style="width:270px" >
+	
+					 <div class="ui blue label" style="width:25%">
+					    작품명
+					  </div>
+					
+					<div class="ui input" style="width:75%">
+	  							<input type="text" class="cname" placeholder="작품이름" name="text" 
+								th:attr="data-val=${index.index+1}"
+								th:value= "${contentlist.contentName}"
+								onkeydown="testchange(this)"
+								onchange="testchange(this)"/>
+					</div>
+					
+					</div>
 			</div>
 		</div>
 		<div class="ui modal">
@@ -76,7 +93,7 @@
 				
 				
 				<div class="ui container">
-					<div class="description" style="padding: 30px;">
+					<div class="description" style="padding: 30px; ">
 						<p>
 						<form class="ui form">
 							<div class="field">
@@ -204,6 +221,7 @@
 		filearray.splice([e.value - 1], 1);
 		for (i = e.value - 1; i < $("#thumbnailMul").find('button').length; i++) {
 			$("#thumbnailMul").find('button')[i].value -= 1;
+			$("#thumbnailMul").find('.cname')[i].dataset.val -= 1;
 		}
 		console.log(filearray);
 		console.log(contentarray);

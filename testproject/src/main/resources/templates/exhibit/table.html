@@ -37,8 +37,9 @@
 										<img
 											th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="200px" height="180px"
 											alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white"
-											onmouseover="$('.circular.button').show();" 
-											onmouseleave="$('.circular.button').hide();"
+											
+											onmouseover="fnmouseover(this)" 
+											onmouseleave="fnmouseleave(this)"
 											 />
 								 	</div>
 									<div class="hidden content">
@@ -50,7 +51,7 @@
 										th:value="${'/admin/file/download/' + contentlist.contentFileEntity.fileSeq}"
 										onclick="fndownloadfile(this)"
 										style="position: absolute; top:10px; left: 10px; z-index: 999; display: none;"
-										onmouseover="$('.circular.button').show();" 
+										onmouseover="fnmouseover(this)" 
 										>
 										<i class="download white icon"></i>
 										</button>
