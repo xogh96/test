@@ -18,6 +18,12 @@
 		<java.version>1.8</java.version>
 	</properties>
 	<dependencies>
+		<!-- 집에서는 mariadb사용 -->
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
