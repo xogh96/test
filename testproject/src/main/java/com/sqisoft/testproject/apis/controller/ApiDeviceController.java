@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sqisoft.testproject.apis.model.ApiDeviceDto;
 import com.sqisoft.testproject.apis.service.ApiDeviceService;
-import com.sqisoft.testproject.domain.DeviceEntity;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,13 +32,13 @@ public class ApiDeviceController
 		return apiDeviceService.selectOne(deviceDto);
 	}
 
-	@GetMapping({ "/add/{deviceSeq}", "/add" })
+	@GetMapping({ "/edit/{deviceSeq}", "/add" })
 	public ApiDeviceDto.info add(ApiDeviceDto.save deviceDto)
 	{
 		return apiDeviceService.insertOne(deviceDto);
 	}
 
-	@GetMapping("/del/{deviceSeq}")
+	@GetMapping("/remove/{deviceSeq}")
 	public void del(ApiDeviceDto.delete deviceDto)
 	{
 		apiDeviceService.deleteOne(deviceDto);

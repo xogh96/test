@@ -1,9 +1,6 @@
 package com.sqisoft.testproject.apis.model;
-
 import com.sqisoft.testproject.domain.DeviceEntity;
-
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,9 +18,7 @@ public class ApiDeviceDto
 	public static class save
 	{
 		private Integer deviceSeq;
-
 		private String deviceCode;
-
 		private String deviceName;
 	}
 
@@ -40,9 +35,7 @@ public class ApiDeviceDto
 	public static class info
 	{
 		private Integer deviceSeq;
-
 		private String deviceCode;
-
 		private String deviceName;
 
 		public info(DeviceEntity deviceEntity)
