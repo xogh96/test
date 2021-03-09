@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,13 +33,19 @@ public class ApiDeviceController
 		return apiDeviceService.selectOne(deviceDto);
 	}
 
-	@GetMapping({ "/edit/{deviceSeq}", "/add" })
+	@PostMapping("/add")
 	public ApiDeviceDto.info add(ApiDeviceDto.save deviceDto)
 	{
 		return apiDeviceService.insertOne(deviceDto);
 	}
 
-	@GetMapping("/remove/{deviceSeq}")
+	@PostMapping("/edit/{deviceSeq}")
+	public ApiDeviceDto.info update(ApiDeviceDto.update deviceDto)
+	{
+		return apiDeviceService.updateOne(deviceDto);
+	}
+
+	@PostMapping("/remove/{deviceSeq}")
 	public void del(ApiDeviceDto.delete deviceDto)
 	{
 		apiDeviceService.deleteOne(deviceDto);

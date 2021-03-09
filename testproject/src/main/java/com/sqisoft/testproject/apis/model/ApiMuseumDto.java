@@ -1,8 +1,15 @@
 package com.sqisoft.testproject.apis.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.domain.ContentFileEntity;
 import com.sqisoft.testproject.domain.DeviceEntity;
@@ -18,6 +25,7 @@ public class ApiMuseumDto
 	@Setter
 	public static class find
 	{
+		@NotEmpty
 		private Integer museumSeq;
 	}
 
@@ -25,24 +33,40 @@ public class ApiMuseumDto
 	@Setter
 	public static class save
 	{
-		private Integer museumSeq;
 		private String museumName;
+
 		private String museumTel;
+
 		private String museumLoc;
-		private Integer fileSeq;
-		private String fileName;
-		private String filePhyName;
-		private String fileThumbPhyName;
-		private Long fileSize;
-		private String fileContentType;
-		private Integer fileOrder;
-		private Integer [] deviceSeq;
+
+		private Integer[] deviceSeq;
+
+		private MultipartFile file;
+	}
+
+	@Getter
+	@Setter
+	public static class update
+	{
+		@NotEmpty
+		private Integer museumSeq;
+
+		private String museumName;
+
+		private String museumTel;
+
+		private String museumLoc;
+
+		private Integer[] deviceSeq;
+
+		private MultipartFile file;
 	}
 
 	@Getter
 	@Setter
 	public static class delete
 	{
+		@NotEmpty
 		private Integer museumSeq;
 	}
 
@@ -52,13 +76,19 @@ public class ApiMuseumDto
 	public static class info
 	{
 		private Integer museumSeq;
+
 		private String museumName;
+
 		private String museumTel;
+
 		private String museumLoc;
+
 		private ApiContentFileDto.info apiContentFileDto;
+
 		private List<ApiDeviceDto.info> apiDeviceDto = new ArrayList<ApiDeviceDto.info>();
+
 		private List<ApiCategoryDto.info> apiCategoryDto = new ArrayList<ApiCategoryDto.info>();
-		
+
 		public info(MuseumEntity museumEntity)
 		{
 			museumSeq = museumEntity.getMuseumSeq();
@@ -74,7 +104,7 @@ public class ApiMuseumDto
 			{
 				apiCategoryDto.add(new ApiCategoryDto.info(museumEntity.getCategoryEntity().get(i)));
 			}
-			
+
 		}
 	}
 }

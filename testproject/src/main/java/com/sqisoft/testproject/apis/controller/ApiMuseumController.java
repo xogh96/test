@@ -1,15 +1,19 @@
 package com.sqisoft.testproject.apis.controller;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.sqisoft.testproject.apis.model.ApiDeviceDto;
 import com.sqisoft.testproject.apis.model.ApiMuseumDto;
-import com.sqisoft.testproject.apis.service.ApiDeviceService;
 import com.sqisoft.testproject.apis.service.ApiMuseumService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,14 +39,19 @@ public class ApiMuseumController
 		return apiMuseumService.selectOne(museumDto);
 	}
 
-	@GetMapping({ "/edit/{museumSeq}", "/add" })
-	public ApiMuseumDto.info add(ApiMuseumDto.save museumDto)
+	@PostMapping("/add")
+	public ApiMuseumDto.info add(ApiMuseumDto.save museumDto) throws IOException
 	{
-		log.debug("add 옴");
 		return apiMuseumService.insertOne(museumDto);
 	}
 
-	@GetMapping("/remove/{museumSeq}")
+	@PostMapping("/edit/{museumSeq}")
+	public ApiMuseumDto.info add(ApiMuseumDto.update museumDto) throws IOException
+	{
+		return apiMuseumService.updateOne(museumDto);
+	}
+
+	@PostMapping("/remove/{museumSeq}")
 	public void del(ApiMuseumDto.delete museumDto)
 	{
 		apiMuseumService.deleteOne(museumDto);

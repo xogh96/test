@@ -50,21 +50,24 @@ public class ApiDeviceService
 		ApiDeviceDto.info info = null;
 		DeviceEntity deviceEntity = null;
 
-		// insert
-		if (deviceDto.getDeviceSeq() == null)
+		deviceEntity = new DeviceEntity();
+		deviceEntity.setDeviceCode(deviceDto.getDeviceCode());
+		deviceEntity.setDeviceName(deviceDto.getDeviceName());
+		DeviceEntity savedDeviceEntity = apiDeviceRepository.save(deviceEntity);
+		info = new ApiDeviceDto.info(savedDeviceEntity);
+		return info;
+	}
+
+	@Transactional
+	public ApiDeviceDto.info updateOne(ApiDeviceDto.update deviceDto)
+	{
+		ApiDeviceDto.info info = null;
+		DeviceEntity deviceEntity = null;
+
+		deviceEntity = apiDeviceRepository.findById(deviceDto.getDeviceSeq()).orElse(null);
+		if (deviceDto.getDeviceName() != null)
 		{
-			deviceEntity = new DeviceEntity();
-			deviceEntity.setDeviceCode(deviceDto.getDeviceCode());
 			deviceEntity.setDeviceName(deviceDto.getDeviceName());
-		}
-		// update
-		if (deviceDto.getDeviceSeq() != null)
-		{
-			deviceEntity = apiDeviceRepository.findById(deviceDto.getDeviceSeq()).orElse(null);
-			if (deviceDto.getDeviceName() != null)
-			{
-				deviceEntity.setDeviceName(deviceDto.getDeviceName());
-			}
 		}
 		DeviceEntity savedDeviceEntity = apiDeviceRepository.save(deviceEntity);
 		info = new ApiDeviceDto.info(savedDeviceEntity);

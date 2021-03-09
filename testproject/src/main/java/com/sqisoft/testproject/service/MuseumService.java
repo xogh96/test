@@ -73,7 +73,12 @@ public class MuseumService
 	
 	public List<MuseumEntity> selectDeviceList(Integer deviceSeq)
 	{
-		return museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
+		List<MuseumEntity> list = museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
+		if (list.size() == 0)
+		{
+			throw new SqiException("데이터가 존재하지 않습니다 등록먼저 해주세요");
+		}
+		return list;
 	}
 
 	@Transactional

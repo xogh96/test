@@ -13,26 +13,6 @@ import lombok.Setter;
 
 public class ApiContentFileDto
 {
-
-	@Getter
-	@Setter
-	public static class save
-	{
-		private Integer fileSeq;
-
-		private String fileName;
-
-		private String filePhyName;
-
-		private String fileThumbPhyName;
-
-		private Long fileSize;
-
-		private String fileContentType;
-
-		private Integer fileOrder;
-	}
-
 	@Getter
 	@Setter
 	@AllArgsConstructor

@@ -1,25 +1,39 @@
 package com.sqisoft.testproject.apis.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.apis.model.ApiCategoryDto;
 import com.sqisoft.testproject.apis.model.ApiContentDto;
 import com.sqisoft.testproject.apis.model.ApiContentDto.delete;
 import com.sqisoft.testproject.apis.model.ApiContentDto.info;
 import com.sqisoft.testproject.apis.model.ApiContentDto.save;
+import com.sqisoft.testproject.apis.model.ApiContentDto.update;
 import com.sqisoft.testproject.apis.repository.ApiCategoryRepo;
 import com.sqisoft.testproject.apis.repository.ApiContentRepo;
+import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.ContentEntity;
 import com.sqisoft.testproject.domain.ContentFileEntity;
+import com.sqisoft.testproject.model.FileInfoDto;
+import com.sqisoft.testproject.util.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 
 @Service
 @Slf4j
@@ -30,6 +44,15 @@ public class ApiContentService
 
 	@Autowired
 	private ApiCategoryRepo apiCategoryRepository;
+
+	@Value("${content.file-path}")
+	private String contentPath;
+
+	@Value("${content.ffmpeg-path}")
+	private String ffmpegPath;
+
+	@Autowired
+	private FileUtils fileUtils;
 
 	@Transactional
 	public List<ApiContentDto.info> selectAll()
@@ -53,82 +76,68 @@ public class ApiContentService
 	}
 
 	@Transactional
-	public ApiContentDto.info insertOne(ApiContentDto.save contentDto)
+	public ApiContentDto.info insertOne(ApiContentDto.save getcontentDto) throws IOException
 	{
 		ApiContentDto.info data = null;
-		// add
-		if (contentDto.getContentSeq() == null)
+		ApiContentDto.save contentDto = getcontentDto;
+
+		ContentEntity contentEntity = new ContentEntity();
+		contentEntity.setContentName(contentDto.getContentName());
+		contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
+
+		if (getcontentDto.getFile() != null)
 		{
-			ContentEntity contentEntity = new ContentEntity();
-			contentEntity.setContentName(contentDto.getContentName());
-			contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
+			Map<String, Object> fileInfoMap = getFileInfos(getcontentDto.getFile());
+
 			ContentFileEntity contentFileEntity = new ContentFileEntity();
-			contentFileEntity.setFileName(contentDto.getFileName());
-			contentFileEntity.setFilePhyName(contentDto.getFilePhyName());
-			contentFileEntity.setFileThumbPhyName(contentDto.getFileThumbPhyName());
-			contentFileEntity.setFileSize(contentDto.getFileSize());
-			contentFileEntity.setFileContentType(contentDto.getFileContentType());
-			contentFileEntity.setFileOrder(contentDto.getFileOrder());
+			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
+			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
+			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
+			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
+			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
+			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
 			contentEntity.setContentFileEntity(contentFileEntity);
-
-			ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-			data = new ApiContentDto.info(savedEntity);
 		}
-		// edit
-		if (contentDto.getContentSeq() != null)
+
+		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
+		data = new ApiContentDto.info(savedEntity);
+		return data;
+	}
+
+	@Transactional
+	public ApiContentDto.info updateOne(ApiContentDto.update getcontentDto) throws IOException
+	{
+		ApiContentDto.info data = null;
+		ApiContentDto.update contentDto = getcontentDto;
+
+		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
+		// 있으면 바꾸고 없으면 그대로
+		if (contentDto.getContentName() != null)
 		{
-			ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
-			// 있으면 바꾸고 없으면 그대로
-			if (contentDto.getContentName() != null)
-			{
-				contentEntity.setContentName(contentDto.getContentName());
-			}
-			if (contentDto.getCategorySeq() != null)
-			{
-				contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
-			}
-			
-			ContentFileEntity contentFileEntity = contentEntity.getContentFileEntity();
-
-			// 추후 multipartfile로 변경
-			if (contentDto.getFileName() != null)
-			{
-				contentFileEntity.setFileName(contentDto.getFileName());
-			}
-
-			if (contentDto.getFileContentType() != null)
-			{
-				contentFileEntity.setFileContentType(contentDto.getFileContentType());
-			}
-
-			if (contentDto.getFileName() != null)
-			{
-				contentFileEntity.setFileName(contentDto.getFileName());
-			}
-
-			if (contentDto.getFilePhyName() != null)
-			{
-				contentFileEntity.setFilePhyName(contentDto.getFilePhyName());
-			}
-
-			if (contentDto.getFileThumbPhyName() != null)
-			{
-				contentFileEntity.setFileThumbPhyName(contentDto.getFileThumbPhyName());
-			}
-
-			if (contentDto.getFileSize() != null)
-			{
-				contentFileEntity.setFileSize(contentDto.getFileSize());
-			}
-			if (contentDto.getFileOrder() != null)
-			{
-				contentFileEntity.setFileOrder(contentDto.getFileOrder());
-			}
-			contentEntity.setContentFileEntity(contentFileEntity);
-
-			ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-			data = new ApiContentDto.info(savedEntity);
+			contentEntity.setContentName(contentDto.getContentName());
 		}
+		if (contentDto.getCategorySeq() != null)
+		{
+			contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
+		}
+
+		ContentFileEntity contentFileEntity = contentEntity.getContentFileEntity();
+
+		if (getcontentDto.getFile() != null)
+		{
+			Map<String, Object> fileInfoMap = getFileInfos(getcontentDto.getFile());
+
+			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
+			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
+			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
+			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
+			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
+			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
+		}
+		contentEntity.setContentFileEntity(contentFileEntity);
+
+		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
+		data = new ApiContentDto.info(savedEntity);
 		return data;
 	}
 
@@ -138,4 +147,92 @@ public class ApiContentService
 		apiContentRepository.deleteById(deviceDto.getContentSeq());
 	}
 
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 *			multipartFile을 넣으면 파일 저장 후 map(정보)를 return 해준다(동영상 가능)
+	 *
+	 *             key : FileThumbPhyName , FileName , FilePhyName , FileSize , FileContentType , FileOrder 
+	 * @author 박태호 e-mail: th.park@sqisoft.com
+	 * @since 2021. 3. 9.
+	 */
+	private Map<String, Object> getFileInfos(MultipartFile file) throws IOException
+	{
+
+		Map<String, Object> fileInfos = new HashMap<String, Object>();
+
+		if (file.isEmpty())
+		{
+			throw new SqiException("파일이 없습니다.");
+		}
+		// 폴더만들기
+		File dir = new File(contentPath);
+		File thumbdir = new File(contentPath + File.separator + "thumb");
+
+		// + File.separator + SqiUtils.getYYYYmm() //날짜별로 관리하고 싶을때는 날짜를 넣어주기
+		if (!dir.exists())
+		{
+			dir.mkdirs();
+		}
+		if (!thumbdir.exists())
+		{
+			thumbdir.mkdirs();
+		}
+		String contentType = fileUtils.getContentType(file.getInputStream());
+		if (StringUtils.startsWith(contentType, "image") || StringUtils.startsWith(contentType, "video"))
+		{
+			// 파일 실제파일이름(폴더에 저장될 이름)
+			final String fileHardName = (UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+			final String fileThumbHardName = (UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+
+			// 폴더에 방금만든 실제파일이름 으로 파일을 만든다 readonly , executable
+			File saveFile = new File(dir.getCanonicalPath(), fileHardName);
+			File saveThumbFile = new File(thumbdir.getCanonicalPath(), fileThumbHardName);
+
+			// 읽기전용 ,파일소유자의 실행권한 관련 세팅을 해준다
+			// saveFile.setReadOnly();
+			// saveFile.setExecutable(false, false);
+			// 가져온 file을 saveFile로 transferTo해준다 (가져온 file에 설정해놓은 savefile로 받은파일을 씌워주는 과정)
+			file.transferTo(saveFile);
+
+			// 이미지 파일 일 때만 썸네일 생성하기
+			if (StringUtils.startsWith(contentType, "image"))
+			{
+				Thumbnails.of(saveFile).size(200, 180).toFile(saveThumbFile);
+				fileInfos.put("FileThumbPhyName", fileThumbHardName);
+			}
+
+			if (StringUtils.startsWith(contentType, "video"))
+			{
+				log.debug("ffmpegpath = " + ffmpegPath);
+				Runtime run = Runtime.getRuntime();
+				String input = saveFile.getCanonicalPath();
+				String output = saveThumbFile.getCanonicalPath();
+				String vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath, input, output);
+				try
+				{
+					run.exec("cmd.exe chcp 65001");
+					log.debug(vd);
+					Process process = run.exec(vd);
+					process.waitFor();
+					fileInfos.put("FileThumbPhyName", fileThumbHardName + ".gif");
+				} catch (Exception e)
+				{
+					log.debug(e.toString());
+					throw new SqiException("동영상 썸네일 생성 실패했습니다 다시 확인해주세요");
+				}
+			}
+			fileInfos.put("FileName", file.getOriginalFilename());
+			fileInfos.put("FilePhyName", fileHardName);
+			fileInfos.put("FileSize", file.getSize());
+			fileInfos.put("FileContentType", contentType);
+			fileInfos.put("FileOrder", 0);
+		} else
+		{
+			throw new SqiException("이미지 또는 동영상만 업로드 가능합니다.");
+		}
+		return fileInfos;
+	}
 }

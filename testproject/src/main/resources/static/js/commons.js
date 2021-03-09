@@ -34,8 +34,8 @@ $(function() {
 		};
 	});
 
-
-	if (sessionStorage.getItem("viewPath") != '/dvc') { // 디바이스가 아닐때만 테이블 불러오기
+	let vp = sessionStorage.getItem("viewPath")
+	if (vp != '/dvc' && (vp=='/mus' || vp=='/cat' || vp=='/ex')) { // 디바이스가 아닐때만 테이블 불러오기
 		if (sessionStorage.getItem("currentpage") != -1) {
 			$('.ui.dropdown').dropdown('set selected', sessionStorage.getItem("currentpage"));
 		} if (sessionStorage.getItem("currentpage") == null || sessionStorage.getItem("currentpage") == -1) {

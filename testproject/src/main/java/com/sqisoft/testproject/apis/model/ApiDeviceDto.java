@@ -1,4 +1,8 @@
 package com.sqisoft.testproject.apis.model;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.sqisoft.testproject.domain.DeviceEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +14,7 @@ public class ApiDeviceDto
 	@Setter
 	public static class find
 	{
+		@NotEmpty
 		private Integer deviceSeq;
 	}
 
@@ -17,8 +22,20 @@ public class ApiDeviceDto
 	@Setter
 	public static class save
 	{
-		private Integer deviceSeq;
 		private String deviceCode;
+
+		private String deviceName;
+	}
+
+	@Getter
+	@Setter
+	public static class update
+	{
+		@NotEmpty
+		private Integer deviceSeq;
+
+		private String deviceCode;
+
 		private String deviceName;
 	}
 
@@ -26,6 +43,7 @@ public class ApiDeviceDto
 	@Setter
 	public static class delete
 	{
+		@NotEmpty
 		private Integer deviceSeq;
 	}
 
@@ -35,7 +53,9 @@ public class ApiDeviceDto
 	public static class info
 	{
 		private Integer deviceSeq;
+
 		private String deviceCode;
+
 		private String deviceName;
 
 		public info(DeviceEntity deviceEntity)

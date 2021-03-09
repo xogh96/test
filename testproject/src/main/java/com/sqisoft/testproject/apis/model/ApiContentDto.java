@@ -1,6 +1,10 @@
 package com.sqisoft.testproject.apis.model;
 
-import com.sqisoft.testproject.domain.CategoryEntity;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sqisoft.testproject.domain.ContentEntity;
 
 import lombok.AllArgsConstructor;
@@ -14,6 +18,7 @@ public class ApiContentDto
 	@Setter
 	public static class find
 	{
+		@NotEmpty
 		private Integer contentSeq;
 	}
 
@@ -21,31 +26,32 @@ public class ApiContentDto
 	@Setter
 	public static class save
 	{
+		private String contentName;
+
+		private Integer categorySeq;
+
+		private MultipartFile file;
+	}
+
+	@Getter
+	@Setter
+	public static class update
+	{
+		@NotEmpty
 		private Integer contentSeq;
 
 		private String contentName;
 
 		private Integer categorySeq;
 
-		private Integer fileSeq;
-
-		private String fileName;
-
-		private String filePhyName;
-
-		private String fileThumbPhyName;
-
-		private Long fileSize;
-
-		private String fileContentType;
-
-		private Integer fileOrder;
+		private MultipartFile file;
 	}
 
 	@Getter
 	@Setter
 	public static class delete
 	{
+		@NotEmpty
 		private Integer contentSeq;
 	}
 

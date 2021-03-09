@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.sqisoft.testproject.domain.CategoryEntity;
 
 import lombok.AllArgsConstructor;
@@ -16,12 +19,26 @@ public class ApiCategoryDto
 	@Setter
 	public static class find
 	{
+		@NotEmpty
 		private Integer categorySeq;
 	}
+
 	@Getter
 	@Setter
 	public static class save
 	{
+		private String categoryName;
+
+		private Integer museumSeq;
+
+		private Integer deviceSeq;
+	}
+
+	@Getter
+	@Setter
+	public static class update
+	{
+		@NotEmpty
 		private Integer categorySeq;
 
 		private String categoryName;
@@ -30,11 +47,12 @@ public class ApiCategoryDto
 
 		private Integer deviceSeq;
 	}
-	
+
 	@Getter
 	@Setter
 	public static class delete
 	{
+		@NotEmpty
 		private Integer categorySeq;
 	}
 
