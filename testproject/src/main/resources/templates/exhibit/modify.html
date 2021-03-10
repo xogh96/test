@@ -3,7 +3,7 @@
 	layout:decorate="~{layout/default}">
 
 
-<div class="thirteen wide column" layout:fragment="content">
+<div class="fourteen wide column" layout:fragment="content">
 
 	<div class="ui right aligned fluid container">
 		<a class="ui button" href="/admin">뒤로가기</a>
@@ -39,29 +39,32 @@
 		</form>
 		<div style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
 
-		<div id="thumbnailMul" class="ui grid conatiner">
-			<div class="three wide column" th:each="contentlist,index : ${category.contentEntity}">
+		<div id="thumbnailMul" class="ui five column grid" style="width:1700px;">
+			<div class="column" th:each="contentlist,index : ${category.contentEntity}"  >
 
 				<div class="ui fade reveal">
-					<div class="visible content">
+					<div class="visible content" >
 						
 						<img
 							th:src="${'/admin/file/imageView/'+contentlist.contentFileEntity.fileSeq}" width="270px"
 							height="180px" onmouseover="fnmouseover(this)" 
 											onmouseleave="fnmouseleave(this)" alt="작품데이터가 없습니다 다시 등록해주세요" style="color:white" />
 
+
 					</div>
 					<div class="hidden content">
 						<img
 							th:attr="data-src=${'holder.js/270x180?bg=2a2025&amp;size=15&amp;text=삭제하기'}" />
+							
+							
 					</div>
-
 					<button id="btndelcon" class="circular red ui icon button" th:value="${index.index+1}"
 						onclick="delcon(this)"
-						style="display:none ; position:absolute; top:10px; right:10px; z-index:999 "
+						style="display:none ; position:absolute; top:10px; right:50px; z-index:999 "
 						th:attr="data-del=${contentlist.contentSeq}" onmouseover="fnmouseover(this)" >
 						<i class="x icon"></i>
 					</button>
+					
 				</div>
 				
 				

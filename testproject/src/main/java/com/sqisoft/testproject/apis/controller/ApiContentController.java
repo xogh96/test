@@ -1,9 +1,15 @@
 package com.sqisoft.testproject.apis.controller;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,8 +57,14 @@ public class ApiContentController
 	}
 
 	@PostMapping("/remove/{contentSeq}")
-	public void del(ApiContentDto.delete deviceDto)
+	public void del(ApiContentDto.delete contentDto)
 	{
-		apiContentService.deleteOne(deviceDto);
+		apiContentService.deleteOne(contentDto);
+	}
+
+	@GetMapping("/download/{contentSeq}")
+	public ResponseEntity<Resource> download(ApiContentDto.find contentDto) throws IOException
+	{
+		return apiContentService.downloadOne(contentDto);
 	}
 }

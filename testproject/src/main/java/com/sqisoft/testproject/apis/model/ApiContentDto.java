@@ -28,6 +28,7 @@ public class ApiContentDto
 	{
 		private String contentName;
 
+		@NotEmpty
 		private Integer categorySeq;
 
 		private MultipartFile file;

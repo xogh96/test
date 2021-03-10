@@ -141,7 +141,7 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 
 			reader.onload = function(e) {
 				let ddv = `
-						<div class="three wide column" >
+						<div class="column" >
 							<div class="ui fade reveal">`;
 
 				if (image) {
@@ -173,7 +173,7 @@ function previewImageMul(f, thumbnailId, width, height, text) {
 								
 							</div>
 							<button id="btndelcon" class="circular red ui icon button" value="${contentarray.length}" onclick="delcon(this)" 
-							style="display:none ; position:absolute; top:10px; right:10px; z-index:999 " 
+							style="display:none ; position:absolute; top:10px; right:50px; z-index:999 " 
 							onmouseover="fnmouseover(this)" 
 							>
 								<i class="x icon"></i>

@@ -30,7 +30,7 @@ public class ApiCategoryController
 		List<ApiCategoryDto.info> infolist = apiCategoryService.selectAll();
 		if (infolist.size() == 0)
 		{
-			return new ResponseEntity<String>("카테고리가 없습니다 등록먼저 해주세요",HttpStatus.INTERNAL_SERVER_ERROR); 
+			return new ResponseEntity<String>("카테고리가 없습니다 등록먼저 해주세요", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		return new ResponseEntity<List<ApiCategoryDto.info>>(infolist, HttpStatus.OK);
 	}
@@ -51,13 +51,22 @@ public class ApiCategoryController
 	}
 
 	@PostMapping("/add")
-	public ApiCategoryDto.info add(ApiCategoryDto.save categoryDto)
+	public ResponseEntity<?> add(ApiCategoryDto.save categoryDto)
 	{
-		return apiCategoryService.insertOne(categoryDto);
+		ApiCategoryDto.info info = null;
+		try
+		{
+			info = apiCategoryService.insertOne(categoryDto);
+		} catch (Exception e)
+		{
+			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<ApiCategoryDto.info>(info, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/edit/{categorySeq}")
-	public ApiCategoryDto.info update(ApiCategoryDto.update categoryDto){
+	public ApiCategoryDto.info update(ApiCategoryDto.update categoryDto)
+	{
 		return apiCategoryService.updateOne(categoryDto);
 	}
 

@@ -39,6 +39,7 @@ public class ApiMuseumDto
 
 		private String museumLoc;
 
+		@NotEmpty
 		private Integer[] deviceSeq;
 
 		private MultipartFile file;

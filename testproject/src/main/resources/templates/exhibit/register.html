@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/default}">
 
-<div class="thirteen wide column" layout:fragment="content">
+<div class="fourteen wide column" layout:fragment="content">
 	<div class="ui right aligned fluid container">
 		<a class="ui button" href="/admin">뒤로가기</a>
 	</div>
@@ -32,7 +32,7 @@
 			</div>
 		</form>
 		<div style="padding-bottom: 20px;color:red">총 <span id="howmany">0</span>개의 작품이 있습니다</div>
-		<div id="thumbnailMul" class="ui grid conatiner"></div>
+		<div id="thumbnailMul" class="ui five column grid" style="width:1700px;">
 
 
 		<div class="ui modal">
@@ -40,7 +40,7 @@
 			<div class="image content">
 				<img class="image" id="contimage" style="width: 400px; height:400px; " />
 
-				<video  id="contvideo"  style="width: 400px; height:400px;" autoplay muted>
+				<video id="contvideo" style="width: 400px; height:400px;" autoplay muted>
 					<source id="contvideocontent">
 				</video>
 				<div class="ui container">
@@ -64,7 +64,7 @@
 
 	</div>
 	<div style="padding-top : 30px;">
-	<button class="ui button" onclick="fnExhibitSubmit()">저장하기</button>
+		<button class="ui button" onclick="fnExhibitSubmit()">저장하기</button>
 	</div>
 </div>
 
@@ -74,7 +74,10 @@
 	const contentarray = [];
 	const filearray = [];
 
+
 	$(function () {
+
+
 
 		//입력되면 disabled 속성 없애주는 함수
 		$("#contentName").on("change keyup paste", function () {
@@ -88,6 +91,7 @@
 
 		//파일이 바뀌면 array에 추가해주는 함수
 		$("#fileinfos").change(function (event) {
+
 			if (event.target.files[0] != null) {
 
 				$('.ui.modal').modal({
@@ -100,7 +104,7 @@
 						$("#contimage").attr('src', '');
 						$("#contimage").hide();
 						$("#contvideocontent").attr('src', e.target.result);
-						
+
 						$("#contvideo").get(0).load();
 						$("#contvideo").get(0).play();
 						$("#contvideo").show();
@@ -121,7 +125,6 @@
 
 			}
 		});
-
 		//파일이 바뀌고 확인을 누르면 밑에 추가해주는 함수
 		$("#confirm").click(function () {
 			contentarray.push($("#contentName").val());

@@ -19,8 +19,8 @@
 				<td th:text="${catlist.deviceEntity.deviceName}">적용된 디바이스</td>
 				<td th:text="${catlist.categoryName}" />
 
-				<td>
-					<div class="ui accordion">
+				<td style="width:1150px;">
+					<div class="ui accordion" >
 						<div class="title">
 							<i class="dropdown icon"></i>
 
@@ -28,8 +28,8 @@
 								th:text="${'등록된 작품 ['+catlist.contentEntity.size+']'}" style="color:red;"></span>
 							<span th:if="${catlist.contentEntity.size == 0}" style="color:red;">작품을 먼저 등록해주세요</span>
 						</div>
-						<div class="content ui grid" style="padding:15px; width:1200px;" >
-							<div th:each="contentlist : ${catlist.contentEntity}" style="padding-bottom: 30px;"
+						<div class="ui content grid" style="padding:15px; width:1150px;" >
+							<div th:each="contentlist : ${catlist.contentEntity}" 
 								class="three wide column">
 								<div class="ui fade reveal">
 									<div class="visible content">

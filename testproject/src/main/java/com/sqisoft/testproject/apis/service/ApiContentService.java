@@ -2,6 +2,10 @@ package com.sqisoft.testproject.apis.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,12 +18,19 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.apis.model.ApiCategoryDto;
 import com.sqisoft.testproject.apis.model.ApiContentDto;
 import com.sqisoft.testproject.apis.model.ApiContentDto.delete;
+import com.sqisoft.testproject.apis.model.ApiContentDto.find;
 import com.sqisoft.testproject.apis.model.ApiContentDto.info;
 import com.sqisoft.testproject.apis.model.ApiContentDto.save;
 import com.sqisoft.testproject.apis.model.ApiContentDto.update;
@@ -65,6 +76,21 @@ public class ApiContentService
 			infoList.add(info);
 		}
 		return infoList;
+	}
+
+	@Transactional
+	public ResponseEntity<Resource> downloadOne(ApiContentDto.find contentDto) throws IOException
+	{
+		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
+		Path path = Paths.get(contentPath + File.separator + contentEntity.getContentFileEntity().getFilePhyName());
+		Resource resource = new InputStreamResource(Files.newInputStream(path));
+		
+		// header만들기
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDisposition(
+						ContentDisposition.builder("attachment").filename(contentEntity.getContentFileEntity().getFileName(), StandardCharsets.UTF_8).build());
+		
+		return new ResponseEntity<>(resource , headers , HttpStatus.OK);
 	}
 
 	@Transactional
@@ -142,9 +168,9 @@ public class ApiContentService
 	}
 
 	@Transactional
-	public void deleteOne(delete deviceDto)
+	public void deleteOne(ApiContentDto.delete contentDto)
 	{
-		apiContentRepository.deleteById(deviceDto.getContentSeq());
+		apiContentRepository.deleteById(contentDto.getContentSeq());
 	}
 
 	/**
@@ -152,9 +178,9 @@ public class ApiContentService
 	 * @param file
 	 * @return
 	 * @throws IOException
-	 *			multipartFile을 넣으면 파일 저장 후 map(정보)를 return 해준다(동영상 가능)
+	 *             multipartFile을 넣으면 파일 저장 후 map(정보)를 return 해준다(동영상 가능)
 	 *
-	 *             key : FileThumbPhyName , FileName , FilePhyName , FileSize , FileContentType , FileOrder 
+	 *             key : FileThumbPhyName , FileName , FilePhyName , FileSize , FileContentType , FileOrder
 	 * @author 박태호 e-mail: th.park@sqisoft.com
 	 * @since 2021. 3. 9.
 	 */
@@ -235,4 +261,5 @@ public class ApiContentService
 		}
 		return fileInfos;
 	}
+
 }

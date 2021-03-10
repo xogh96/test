@@ -29,8 +29,10 @@ public class ApiCategoryDto
 	{
 		private String categoryName;
 
+		@NotEmpty
 		private Integer museumSeq;
 
+		@NotEmpty
 		private Integer deviceSeq;
 	}
 
