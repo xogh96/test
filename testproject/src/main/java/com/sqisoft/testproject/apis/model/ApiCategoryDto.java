@@ -17,7 +17,7 @@ public class ApiCategoryDto
 {
 	@Getter
 	@Setter
-	public static class find
+	public static class categoryFind
 	{
 		@NotEmpty
 		private Integer categorySeq;
@@ -25,7 +25,7 @@ public class ApiCategoryDto
 
 	@Getter
 	@Setter
-	public static class save
+	public static class categorySave
 	{
 		private String categoryName;
 
@@ -38,7 +38,7 @@ public class ApiCategoryDto
 
 	@Getter
 	@Setter
-	public static class update
+	public static class categoryUpdate
 	{
 		@NotEmpty
 		private Integer categorySeq;
@@ -52,7 +52,7 @@ public class ApiCategoryDto
 
 	@Getter
 	@Setter
-	public static class delete
+	public static class categoryDelete
 	{
 		@NotEmpty
 		private Integer categorySeq;
@@ -61,7 +61,7 @@ public class ApiCategoryDto
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static class info
+	public static class categoryInfo
 	{
 		private Integer categorySeq;
 
@@ -71,9 +71,9 @@ public class ApiCategoryDto
 
 		private Integer deviceSeq;
 
-		private List<ApiContentDto.info> apiContentDto = new ArrayList<ApiContentDto.info>();
+		private List<ApiContentDto.contentInfo> apiContentDto = new ArrayList<ApiContentDto.contentInfo>();
 
-		public info(CategoryEntity categoryEntity)
+		public categoryInfo(CategoryEntity categoryEntity)
 		{
 			categorySeq = categoryEntity.getCategorySeq();
 			categoryName = categoryEntity.getCategoryName();
@@ -82,7 +82,7 @@ public class ApiCategoryDto
 
 			for (int i = 0; i < categoryEntity.getContentEntity().size(); i++)
 			{
-				ApiContentDto.info contentdata = new ApiContentDto.info(categoryEntity.getContentEntity().get(i));
+				ApiContentDto.contentInfo contentdata = new ApiContentDto.contentInfo(categoryEntity.getContentEntity().get(i));
 				apiContentDto.add(contentdata);
 			}
 

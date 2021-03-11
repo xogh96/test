@@ -16,7 +16,7 @@ public class ApiContentDto
 
 	@Getter
 	@Setter
-	public static class find
+	public static class contentFind
 	{
 		@NotEmpty
 		private Integer contentSeq;
@@ -24,7 +24,7 @@ public class ApiContentDto
 
 	@Getter
 	@Setter
-	public static class save
+	public static class contentSave
 	{
 		private String contentName;
 
@@ -36,7 +36,7 @@ public class ApiContentDto
 
 	@Getter
 	@Setter
-	public static class update
+	public static class contentUpdate
 	{
 		@NotEmpty
 		private Integer contentSeq;
@@ -50,7 +50,7 @@ public class ApiContentDto
 
 	@Getter
 	@Setter
-	public static class delete
+	public static class contentDelete
 	{
 		@NotEmpty
 		private Integer contentSeq;
@@ -59,7 +59,7 @@ public class ApiContentDto
 	@Getter
 	@Setter
 	@AllArgsConstructor
-	public static class info
+	public static class contentInfo
 	{
 		private Integer contentSeq;
 
@@ -67,14 +67,14 @@ public class ApiContentDto
 
 		private Integer categorySeq;
 
-		private ApiContentFileDto.info apiContentFileDto;
+		private ApiContentFileDto.contentFileInfo apiContentFileDto;
 
-		public info(ContentEntity contentEntity)
+		public contentInfo(ContentEntity contentEntity)
 		{
 			contentSeq = contentEntity.getContentSeq();
 			contentName = contentEntity.getContentName();
 			categorySeq = contentEntity.getCategoryEntity().getCategorySeq();
-			apiContentFileDto = new ApiContentFileDto.info(contentEntity.getContentFileEntity());
+			apiContentFileDto = new ApiContentFileDto.contentFileInfo(contentEntity.getContentFileEntity());
 		}
 	}
 

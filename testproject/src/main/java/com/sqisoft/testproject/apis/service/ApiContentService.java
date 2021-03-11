@@ -27,20 +27,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sqisoft.testproject.apis.model.ApiCategoryDto;
 import com.sqisoft.testproject.apis.model.ApiContentDto;
-import com.sqisoft.testproject.apis.model.ApiContentDto.delete;
-import com.sqisoft.testproject.apis.model.ApiContentDto.find;
-import com.sqisoft.testproject.apis.model.ApiContentDto.info;
-import com.sqisoft.testproject.apis.model.ApiContentDto.save;
-import com.sqisoft.testproject.apis.model.ApiContentDto.update;
 import com.sqisoft.testproject.apis.repository.ApiCategoryRepo;
 import com.sqisoft.testproject.apis.repository.ApiContentRepo;
 import com.sqisoft.testproject.config.SqiException;
-import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.ContentEntity;
 import com.sqisoft.testproject.domain.ContentFileEntity;
-import com.sqisoft.testproject.model.FileInfoDto;
 import com.sqisoft.testproject.util.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -66,20 +58,20 @@ public class ApiContentService
 	private FileUtils fileUtils;
 
 	@Transactional
-	public List<ApiContentDto.info> selectAll()
+	public List<ApiContentDto.contentInfo> selectAll()
 	{
-		List<ApiContentDto.info> infoList = new ArrayList<ApiContentDto.info>();
+		List<ApiContentDto.contentInfo> infoList = new ArrayList<ApiContentDto.contentInfo>();
 		List<ContentEntity> contentList = apiContentRepository.findAll();
 		for (int i = 0; i < contentList.size(); i++)
 		{
-			ApiContentDto.info info = new ApiContentDto.info(contentList.get(i));
+			ApiContentDto.contentInfo info = new ApiContentDto.contentInfo(contentList.get(i));
 			infoList.add(info);
 		}
 		return infoList;
 	}
 
 	@Transactional
-	public ResponseEntity<Resource> downloadOne(ApiContentDto.find contentDto) throws IOException
+	public ResponseEntity<Resource> downloadOne(ApiContentDto.contentFind contentDto) throws IOException
 	{
 		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
 		Path path = Paths.get(contentPath + File.separator + contentEntity.getContentFileEntity().getFilePhyName());
@@ -94,18 +86,18 @@ public class ApiContentService
 	}
 
 	@Transactional
-	public ApiContentDto.info selectOne(ApiContentDto.find contentDto)
+	public ApiContentDto.contentInfo selectOne(ApiContentDto.contentFind contentDto)
 	{
 		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
-		ApiContentDto.info info = new ApiContentDto.info(contentEntity);
+		ApiContentDto.contentInfo info = new ApiContentDto.contentInfo(contentEntity);
 		return info;
 	}
 
 	@Transactional
-	public ApiContentDto.info insertOne(ApiContentDto.save getcontentDto) throws IOException
+	public ApiContentDto.contentInfo insertOne(ApiContentDto.contentSave getcontentDto) throws IOException
 	{
-		ApiContentDto.info data = null;
-		ApiContentDto.save contentDto = getcontentDto;
+		ApiContentDto.contentInfo data = null;
+		ApiContentDto.contentSave contentDto = getcontentDto;
 
 		ContentEntity contentEntity = new ContentEntity();
 		contentEntity.setContentName(contentDto.getContentName());
@@ -126,15 +118,15 @@ public class ApiContentService
 		}
 
 		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-		data = new ApiContentDto.info(savedEntity);
+		data = new ApiContentDto.contentInfo(savedEntity);
 		return data;
 	}
 
 	@Transactional
-	public ApiContentDto.info updateOne(ApiContentDto.update getcontentDto) throws IOException
+	public ApiContentDto.contentInfo updateOne(ApiContentDto.contentUpdate getcontentDto) throws IOException
 	{
-		ApiContentDto.info data = null;
-		ApiContentDto.update contentDto = getcontentDto;
+		ApiContentDto.contentInfo data = null;
+		ApiContentDto.contentUpdate contentDto = getcontentDto;
 
 		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
 		// 있으면 바꾸고 없으면 그대로
@@ -163,12 +155,12 @@ public class ApiContentService
 		contentEntity.setContentFileEntity(contentFileEntity);
 
 		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-		data = new ApiContentDto.info(savedEntity);
+		data = new ApiContentDto.contentInfo(savedEntity);
 		return data;
 	}
 
 	@Transactional
-	public void deleteOne(ApiContentDto.delete contentDto)
+	public void deleteOne(ApiContentDto.contentDelete contentDto)
 	{
 		apiContentRepository.deleteById(contentDto.getContentSeq());
 	}

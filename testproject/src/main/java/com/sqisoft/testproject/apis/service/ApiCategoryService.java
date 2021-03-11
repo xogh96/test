@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sqisoft.testproject.apis.model.ApiCategoryDto;
-import com.sqisoft.testproject.apis.model.ApiCategoryDto.delete;
-import com.sqisoft.testproject.apis.model.ApiCategoryDto.update;
 import com.sqisoft.testproject.apis.repository.ApiCategoryRepo;
 import com.sqisoft.testproject.apis.repository.ApiDeviceRepo;
 import com.sqisoft.testproject.apis.repository.ApiMuseumRepo;
@@ -34,22 +32,22 @@ public class ApiCategoryService
 	private ApiDeviceRepo apiDeviceRepository;
 
 	@Transactional
-	public List<ApiCategoryDto.info> selectAll()
+	public List<ApiCategoryDto.categoryInfo> selectAll()
 	{
-		List<ApiCategoryDto.info> infoList = new ArrayList<ApiCategoryDto.info>();
+		List<ApiCategoryDto.categoryInfo> infoList = new ArrayList<ApiCategoryDto.categoryInfo>();
 		List<CategoryEntity> list = apiCategoryRepository.findAll();
 		for (int i = 0; i < list.size(); i++)
 		{
-			ApiCategoryDto.info info = new ApiCategoryDto.info(list.get(i));
+			ApiCategoryDto.categoryInfo info = new ApiCategoryDto.categoryInfo(list.get(i));
 			infoList.add(info);
 		}
 		return infoList;
 	}
 
 	@Transactional
-	public ApiCategoryDto.info insertOne(ApiCategoryDto.save categoryDto)
+	public ApiCategoryDto.categoryInfo insertOne(ApiCategoryDto.categorySave categoryDto)
 	{
-		ApiCategoryDto.info data = null;
+		ApiCategoryDto.categoryInfo data = null;
 		// add
 		MuseumEntity museumEntity = apiMuseumRepository.findById(categoryDto.getMuseumSeq()).orElse(null);
 		DeviceEntity deviceEntity = apiDeviceRepository.findById(categoryDto.getDeviceSeq()).orElse(null);
@@ -58,14 +56,14 @@ public class ApiCategoryService
 		categoryEntity.setDeviceEntity(deviceEntity);
 		categoryEntity.setMuseumEntity(museumEntity);
 		CategoryEntity savedData = apiCategoryRepository.save(categoryEntity);
-		data = new ApiCategoryDto.info(savedData);
+		data = new ApiCategoryDto.categoryInfo(savedData);
 		return data;
 	}
 
 	@Transactional
-	public ApiCategoryDto.info updateOne(ApiCategoryDto.update categoryDto)
+	public ApiCategoryDto.categoryInfo updateOne(ApiCategoryDto.categoryUpdate categoryDto)
 	{
-		ApiCategoryDto.info data = null;
+		ApiCategoryDto.categoryInfo data = null;
 
 		CategoryEntity categoryEntity = apiCategoryRepository.findById(categoryDto.getCategorySeq()).orElse(null);
 
@@ -85,20 +83,20 @@ public class ApiCategoryService
 			categoryEntity.setMuseumEntity(museumEntity);
 		}
 		CategoryEntity savedData = apiCategoryRepository.save(categoryEntity);
-		data = new ApiCategoryDto.info(savedData);
+		data = new ApiCategoryDto.categoryInfo(savedData);
 		return data;
 	}
 
 	@Transactional
-	public ApiCategoryDto.info selectOne(ApiCategoryDto.find categoryDto)
+	public ApiCategoryDto.categoryInfo selectOne(ApiCategoryDto.categoryFind categoryDto)
 	{
 		CategoryEntity categoryEntity = apiCategoryRepository.findById(categoryDto.getCategorySeq()).orElse(null);
-		ApiCategoryDto.info info = new ApiCategoryDto.info(categoryEntity);
+		ApiCategoryDto.categoryInfo info = new ApiCategoryDto.categoryInfo(categoryEntity);
 		return info;
 	}
 
 	@Transactional
-	public void deleteOne(delete categoryDto)
+	public void deleteOne(ApiCategoryDto.categoryDelete categoryDto)
 	{
 		apiCategoryRepository.deleteById(categoryDto.getCategorySeq());
 	}

@@ -22,8 +22,10 @@ import com.sqisoft.testproject.apis.model.ApiDeviceDto;
 import com.sqisoft.testproject.apis.model.ApiMuseumDto;
 import com.sqisoft.testproject.apis.service.ApiContentService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag( name="content" , description = "콘텐츠 관련 api입니다")
 @Slf4j
 @RequestMapping("/api/content")
 @RestController
@@ -33,37 +35,37 @@ public class ApiContentController
 	private ApiContentService apiContentService;
 
 	@GetMapping("")
-	public List<ApiContentDto.info> findAll()
+	public List<ApiContentDto.contentInfo> findAll()
 	{
 		return apiContentService.selectAll();
 	}
 
 	@GetMapping("/{contentSeq}")
-	public ApiContentDto.info findOne(ApiContentDto.find contentDto)
+	public ApiContentDto.contentInfo findOne(ApiContentDto.contentFind contentDto)
 	{
 		return apiContentService.selectOne(contentDto);
 	}
 
 	@PostMapping("/add")
-	public ApiContentDto.info add(ApiContentDto.save contentDto) throws IOException
+	public ApiContentDto.contentInfo add(ApiContentDto.contentSave contentDto) throws IOException
 	{
 		return apiContentService.insertOne(contentDto);
 	}
 
 	@PostMapping("/edit/{contentSeq}")
-	public ApiContentDto.info update(ApiContentDto.update contentDto) throws IOException
+	public ApiContentDto.contentInfo update(ApiContentDto.contentUpdate contentDto) throws IOException
 	{
 		return apiContentService.updateOne(contentDto);
 	}
 
 	@PostMapping("/remove/{contentSeq}")
-	public void del(ApiContentDto.delete contentDto)
+	public void del(ApiContentDto.contentDelete contentDto)
 	{
 		apiContentService.deleteOne(contentDto);
 	}
 
 	@GetMapping("/download/{contentSeq}")
-	public ResponseEntity<Resource> download(ApiContentDto.find contentDto) throws IOException
+	public ResponseEntity<Resource> download(ApiContentDto.contentFind contentDto) throws IOException
 	{
 		return apiContentService.downloadOne(contentDto);
 	}

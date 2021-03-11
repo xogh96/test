@@ -12,7 +12,7 @@ import com.sqisoft.testproject.model.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ControllerAdvice(basePackages = { "com.sqisoft.testproject" })
+@ControllerAdvice(basePackages = { "com.sqisoft.testproject.controller" })
 public class SqiExceptionHandler
 {
 	@ExceptionHandler(value = { SqiException.class })

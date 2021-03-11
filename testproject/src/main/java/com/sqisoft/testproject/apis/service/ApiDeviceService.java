@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sqisoft.testproject.apis.model.ApiDeviceDto;
-import com.sqisoft.testproject.apis.model.ApiDeviceDto.delete;
 import com.sqisoft.testproject.apis.repository.ApiDeviceRepo;
 import com.sqisoft.testproject.domain.DeviceEntity;
 
@@ -23,59 +22,63 @@ public class ApiDeviceService
 	private ApiDeviceRepo apiDeviceRepository;
 
 	@Transactional
-	public List<ApiDeviceDto.info> selectAll()
+	public List<ApiDeviceDto.deviceInfo> selectAll()
 	{
-		List<ApiDeviceDto.info> infoList = new ArrayList<ApiDeviceDto.info>();
+		List<ApiDeviceDto.deviceInfo> infoList = new ArrayList<ApiDeviceDto.deviceInfo>();
 		List<DeviceEntity> deviceList = apiDeviceRepository.findAll();
 
 		for (int i = 0; i < deviceList.size(); i++)
 		{
-			ApiDeviceDto.info info = new ApiDeviceDto.info(deviceList.get(i));
+			ApiDeviceDto.deviceInfo info = new ApiDeviceDto.deviceInfo(deviceList.get(i));
 			infoList.add(info);
 		}
 		return infoList;
 	}
 
 	@Transactional
-	public ApiDeviceDto.info selectOne(ApiDeviceDto.find deviceDto)
+	public ApiDeviceDto.deviceInfo selectOne(ApiDeviceDto.deviceFind deviceDto)
 	{
 		DeviceEntity deviceEntity = apiDeviceRepository.findById(deviceDto.getDeviceSeq()).orElse(null);
-		ApiDeviceDto.info info = new ApiDeviceDto.info(deviceEntity);
+		ApiDeviceDto.deviceInfo info = new ApiDeviceDto.deviceInfo(deviceEntity);
 		return info;
 	}
 
 	@Transactional
-	public ApiDeviceDto.info insertOne(ApiDeviceDto.save deviceDto)
+	public ApiDeviceDto.deviceInfo insertOne(ApiDeviceDto.deviceSave deviceDto)
 	{
-		ApiDeviceDto.info info = null;
+		ApiDeviceDto.deviceInfo info = null;
 		DeviceEntity deviceEntity = null;
 
 		deviceEntity = new DeviceEntity();
 		deviceEntity.setDeviceCode(deviceDto.getDeviceCode());
 		deviceEntity.setDeviceName(deviceDto.getDeviceName());
 		DeviceEntity savedDeviceEntity = apiDeviceRepository.save(deviceEntity);
-		info = new ApiDeviceDto.info(savedDeviceEntity);
+		info = new ApiDeviceDto.deviceInfo(savedDeviceEntity);
 		return info;
 	}
 
 	@Transactional
-	public ApiDeviceDto.info updateOne(ApiDeviceDto.update deviceDto)
+	public ApiDeviceDto.deviceInfo updateOne(ApiDeviceDto.deviceUpdate deviceDto)
 	{
-		ApiDeviceDto.info info = null;
+		ApiDeviceDto.deviceInfo info = null;
 		DeviceEntity deviceEntity = null;
 
 		deviceEntity = apiDeviceRepository.findById(deviceDto.getDeviceSeq()).orElse(null);
 		if (deviceDto.getDeviceName() != null)
 		{
-			deviceEntity.setDeviceName(deviceDto.getDeviceName());
+			if (!deviceDto.getDeviceName().equals(""))
+			{
+				deviceEntity.setDeviceName(deviceDto.getDeviceName());
+			}
+			
 		}
 		DeviceEntity savedDeviceEntity = apiDeviceRepository.save(deviceEntity);
-		info = new ApiDeviceDto.info(savedDeviceEntity);
+		info = new ApiDeviceDto.deviceInfo(savedDeviceEntity);
 		return info;
 	}
 
 	@Transactional
-	public void deleteOne(delete deviceDto)
+	public void deleteOne(ApiDeviceDto.deviceDelete deviceDto)
 	{
 		apiDeviceRepository.deleteById(deviceDto.getDeviceSeq());
 	}

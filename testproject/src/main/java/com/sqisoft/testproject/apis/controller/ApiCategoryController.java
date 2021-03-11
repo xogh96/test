@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sqisoft.testproject.apis.model.ApiCategoryDto;
 import com.sqisoft.testproject.apis.service.ApiCategoryService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag( name="category" , description = "카테고리 관련 api입니다")
 @Slf4j
 @RequestMapping("/api/category")
 @RestController
@@ -27,19 +29,19 @@ public class ApiCategoryController
 	@GetMapping("")
 	public ResponseEntity<?> findAll()
 	{
-		List<ApiCategoryDto.info> infolist = apiCategoryService.selectAll();
+		List<ApiCategoryDto.categoryInfo> infolist = apiCategoryService.selectAll();
 		if (infolist.size() == 0)
 		{
 			return new ResponseEntity<String>("카테고리가 없습니다 등록먼저 해주세요", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<List<ApiCategoryDto.info>>(infolist, HttpStatus.OK);
+		return new ResponseEntity<List<ApiCategoryDto.categoryInfo>>(infolist, HttpStatus.OK);
 	}
 
 	@GetMapping("/{categorySeq}")
-	public ResponseEntity<?> findOne(ApiCategoryDto.find categoryDto)
+	public ResponseEntity<?> findOne(ApiCategoryDto.categoryFind categoryDto)
 	{
 		log.debug("selectone 도착");
-		ApiCategoryDto.info info = null;
+		ApiCategoryDto.categoryInfo info = null;
 		try
 		{
 			info = apiCategoryService.selectOne(categoryDto);
@@ -47,13 +49,13 @@ public class ApiCategoryController
 		{
 			return new ResponseEntity<String>("존재하지 않는 카테고리입니다 카테고리 seq를 다시 확인해주세요", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<ApiCategoryDto.info>(info, HttpStatus.OK);
+		return new ResponseEntity<ApiCategoryDto.categoryInfo>(info, HttpStatus.OK);
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<?> add(ApiCategoryDto.save categoryDto)
+	public ResponseEntity<?> add(ApiCategoryDto.categorySave categoryDto)
 	{
-		ApiCategoryDto.info info = null;
+		ApiCategoryDto.categoryInfo info = null;
 		try
 		{
 			info = apiCategoryService.insertOne(categoryDto);
@@ -61,17 +63,17 @@ public class ApiCategoryController
 		{
 			return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<ApiCategoryDto.info>(info, HttpStatus.OK);
+		return new ResponseEntity<ApiCategoryDto.categoryInfo>(info, HttpStatus.OK);
 	}
 
 	@PostMapping("/edit/{categorySeq}")
-	public ApiCategoryDto.info update(ApiCategoryDto.update categoryDto)
+	public ApiCategoryDto.categoryInfo update(ApiCategoryDto.categoryUpdate categoryDto)
 	{
 		return apiCategoryService.updateOne(categoryDto);
 	}
 
 	@PostMapping("/remove/{categorySeq}")
-	public ResponseEntity<String> del(ApiCategoryDto.delete categoryDto)
+	public ResponseEntity<String> del(ApiCategoryDto.categoryDelete categoryDto)
 	{
 		try
 		{
