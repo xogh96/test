@@ -1,7 +1,8 @@
 package com.sqisoft.testproject.service;
 
 import java.io.IOException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.DeviceEntity;
+import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.repository.DeviceRepo;
+import com.sqisoft.testproject.repository.MuseumRepo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,12 +27,15 @@ public class DeviceService
 	@Autowired
 	private DeviceRepo deviceRepository;
 
+	@Autowired
+	private MuseumRepo museumRepository;
+	
 	@Transactional
 	public List<DeviceEntity> selectAll()
 	{
 		return deviceRepository.findAll();
 	}
-
+	
 	@Transactional
 	public Optional<DeviceEntity> selectOne(Integer deviceSeq)
 	{

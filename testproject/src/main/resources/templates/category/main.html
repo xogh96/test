@@ -26,10 +26,20 @@
 		<div class="ui grid">
 			<div class="column" style="background-color:antiquewhite; padding: 30px;">
 				<form class="ui form" id="Form">
+				
+				<div class="field"><label>카테고리 이름</label>
+						<input type="text" label="카테고리 이름" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
+							maxlength="10">
+					</div>
+					
+					
 					<div class="field">
 						<label>적용 박물관</label>
 						<div class="ui selection dropdown">
+							<input type="hidden" name="museumSeq">
+							<!--
 							<input type="hidden" name="museumSeq" onchange="getlist(this)">
+							-->
 							<i class="dropdown icon"></i>
 							<div class="default text">적용 박물관을 선택해주세요</div>
 							<div class="menu" id="datas">
@@ -39,6 +49,7 @@
 							</div>
 						</div>
 					</div>
+					<!--
 					<div class="field">
 						<label>적용 디바이스</label>
 						<div class="ui selection dropdown">
@@ -49,10 +60,8 @@
 							</div>
 						</div>
 					</div>
-					<div class="field"><label>카테고리 이름</label>
-						<input type="text" label="카테고리 이름" placeholder="카테고리 이름을 입력해주세요" name="categoryName"
-							maxlength="10">
-					</div>
+					-->
+					
 				</form>
 				<div id="thumbnailMul" style="padding-top:5px;"></div>
 				<div id="thumbnail" style="padding-top:5px;"></div>
@@ -70,6 +79,7 @@
 
 </html>
 <script>
+/*
 	function getlist(event) {
 		let contextPath = sessionStorage.getItem("contextPath");
 		let viewPath = sessionStorage.getItem("viewPath");
@@ -89,12 +99,9 @@
 				$("#devicedatas").html("");
 			});
 	}
-
+*/
 
 	$(function () {
-		
-		
-		
 		
 	});
 </script>

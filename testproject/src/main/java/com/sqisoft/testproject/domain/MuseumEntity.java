@@ -47,16 +47,18 @@ public class MuseumEntity
 
 	@Column(name = "mu_loc", columnDefinition = "VARCHAR(300) COMMENT '박물관_주소' ")
 	private String museumLoc;
-	
+
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "museumEntity")
 	@JsonBackReference
 	private List<CategoryEntity> categoryEntity = new ArrayList<CategoryEntity>();
-	
-	@ManyToMany
-  	@JoinTable(name = "tb_museum_device",
-  				joinColumns = @JoinColumn(name = "mu_seq"),
-  				inverseJoinColumns = @JoinColumn(name = "dev_seq") )
-  	private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
+
+	// @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH , CascadeType.REFRESH},
+	// fetch = FetchType.LAZY, mappedBy = "museumEntity")
+	// private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
+
+	@OneToMany()
+	@JoinTable(name = "tb_museum_device", joinColumns = @JoinColumn(name = "mu_seq"), inverseJoinColumns = @JoinColumn(name = "dev_seq"))
+	private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
 
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	@JoinColumn(name = "file_seq", referencedColumnName = "file_seq", foreignKey = @ForeignKey(name = "fk_tb_museum_2"))

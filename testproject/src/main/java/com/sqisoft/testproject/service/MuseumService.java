@@ -3,6 +3,7 @@ package com.sqisoft.testproject.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +37,9 @@ public class MuseumService
 	@Autowired
 	private MuseumRepo museumRepository;
 
+	@Autowired
+	private DeviceRepo deviceRepository;
+
 	@Value("${content.file-path}")
 	private String contentPath;
 
@@ -58,19 +62,37 @@ public class MuseumService
 	}
 	
 	@Transactional
+	public List<DeviceEntity> selectAllByEmptyMuseumEntity()
+	{
+		List<DeviceEntity> getlist = deviceRepository.findAll();
+		List<DeviceEntity> emptyList = new ArrayList<DeviceEntity>();
+		List<MuseumEntity> finddeviceEntity = new ArrayList<MuseumEntity>();
+		
+		for (int i = 0; i < getlist.size(); i++)
+		{
+			finddeviceEntity = museumRepository.findByDeviceEntityDeviceSeq(getlist.get(i).getDeviceSeq());
+			if(finddeviceEntity.size()==0) {
+				emptyList.add(getlist.get(i));
+			}
+		}
+		return getlist;
+		//return emptyList;
+	}
+
+	@Transactional
 	public List<Integer> selectOneDeviceSeq(Integer museumSeq)
 	{
 		MuseumEntity museumEntity = museumRepository.findById(museumSeq).orElse(null);
 		List<DeviceEntity> deviceList = museumEntity.getDeviceEntity();
 		List<Integer> deviceSeq = new ArrayList<Integer>();
-		
+
 		for (int i = 0; i < deviceList.size(); i++)
 		{
 			deviceSeq.add(deviceList.get(i).getDeviceSeq());
 		}
 		return deviceSeq;
 	}
-	
+
 	public List<MuseumEntity> selectDeviceList(Integer deviceSeq)
 	{
 		List<MuseumEntity> list = museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
@@ -82,28 +104,65 @@ public class MuseumService
 	}
 
 	@Transactional
-	public boolean modifyOne(Integer museumSeq, DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
+	public boolean insertOne(DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
 	{
-		List<DeviceEntity> devicelist = new ArrayList<DeviceEntity>();
-		// deviceseq로 devicecode랑 name 가져오기
+		DeviceDto getdeviceDto = setDtoInfos(deviceDto, mRequest.getFile("file"));
+
+		MuseumEntity museumEntity = new MuseumEntity();
+
+		museumEntity.setMuseumLoc(getdeviceDto.getMuseumLoc());
+		museumEntity.setMuseumName(getdeviceDto.getMuseumName());
+		museumEntity.setMuseumTel(getdeviceDto.getMuseumTel());
+
+		List <DeviceEntity> list = new ArrayList<DeviceEntity>();
+
 		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
 		{
-			DeviceEntity getDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i]).orElse(null);
-			devicelist.add(getDeviceEntity);
+			DeviceEntity findDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i])
+							.orElseThrow(() -> new SqiException("device not found!!"));
+			list.add(findDeviceEntity);
 		}
 		
-		MuseumEntity museumEntity = museumRepository.findById(museumSeq).orElse(null);
-		museumEntity.setMuseumName(deviceDto.getMuseumName());
-		museumEntity.setMuseumLoc(deviceDto.getMuseumLoc());
-		museumEntity.setMuseumTel(deviceDto.getMuseumTel());
-		museumEntity.setDeviceEntity(devicelist);
+		museumEntity.setDeviceEntity(list);
+	
+
+		ContentFileEntity contentFileEntity = new ContentFileEntity();
+		contentFileEntity.setFileContentType(getdeviceDto.getFileContentType());
+		contentFileEntity.setFileName(getdeviceDto.getFileName());
+		contentFileEntity.setFileOrder(getdeviceDto.getFileOrder());
+		contentFileEntity.setFilePhyName(getdeviceDto.getFilePhyName());
+		contentFileEntity.setFileSize(getdeviceDto.getFileSize());
+		contentFileEntity.setFileThumbPhyName(getdeviceDto.getFileThumbPhyName());
+		museumEntity.setContentFileEntity(contentFileEntity);
+
+		museumRepository.save(museumEntity);
+		return true;
+	}
+
+	@Transactional
+	public boolean modifyOne(Integer museumSeq, DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
+	{
+		MuseumEntity findMusemEntity = museumRepository.findById(museumSeq).orElseThrow(() -> new SqiException("saved error"));
+		findMusemEntity.setMuseumName(deviceDto.getMuseumName());
+		findMusemEntity.setMuseumLoc(deviceDto.getMuseumLoc());
+		findMusemEntity.setMuseumTel(deviceDto.getMuseumTel());
+
+		List<DeviceEntity> deviceEntities = new ArrayList<DeviceEntity>();
+
+		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
+		{
+			DeviceEntity findDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i])
+							.orElseThrow(() -> new SqiException("device not found!!"));
+			deviceEntities.add(findDeviceEntity);
+		}
+		findMusemEntity.setDeviceEntity(deviceEntities);
 
 		// 만약 파일이 들어온게 있다면
 		if (!mRequest.getFile("file").isEmpty())
 		{
 			deviceDto = setDtoInfos(deviceDto, mRequest.getFile("file"));
 
-			ContentFileEntity contentFileEntity = museumEntity.getContentFileEntity();
+			ContentFileEntity contentFileEntity = findMusemEntity.getContentFileEntity();
 			contentFileEntity.setFileContentType(deviceDto.getFileContentType());
 			contentFileEntity.setFileName(deviceDto.getFileName());
 			contentFileEntity.setFileOrder(deviceDto.getFileOrder());
@@ -111,52 +170,7 @@ public class MuseumService
 			contentFileEntity.setFileSize(deviceDto.getFileSize());
 			contentFileEntity.setFileThumbPhyName(deviceDto.getFileThumbPhyName());
 		}
-		MuseumEntity savedEntity = museumRepository.save(museumEntity);
-		if (savedEntity == null)
-		{
-			return false;
-		}
-		return true;
-
-	}
-
-	@Transactional
-	public boolean insertOne(DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
-	{
-		List<DeviceEntity> devicelist = new ArrayList<DeviceEntity>();
-		// deviceseq로 devicecode랑 name 가져오기
-		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
-		{
-			DeviceEntity getDeviceEntity = deviceService.selectOne(deviceDto.getDeviceSeq()[i]).orElse(null);
-			devicelist.add(getDeviceEntity);
-		}
-		DeviceDto getdeviceDto = setDtoInfos(deviceDto, mRequest.getFile("file"));
-
-		MuseumEntity museumEntity = new MuseumEntity();
-
-		ContentFileEntity contentFileEntity = new ContentFileEntity();
-
-		contentFileEntity.setFileContentType(getdeviceDto.getFileContentType());
-		contentFileEntity.setFileName(getdeviceDto.getFileName());
-		contentFileEntity.setFileOrder(getdeviceDto.getFileOrder());
-		contentFileEntity.setFilePhyName(getdeviceDto.getFilePhyName());
-		contentFileEntity.setFileSize(getdeviceDto.getFileSize());
-		contentFileEntity.setFileThumbPhyName(getdeviceDto.getFileThumbPhyName());
-
-		museumEntity.setMuseumLoc(getdeviceDto.getMuseumLoc());
-		museumEntity.setMuseumName(getdeviceDto.getMuseumName());
-		museumEntity.setMuseumTel(getdeviceDto.getMuseumTel());
-
-		museumEntity.setContentFileEntity(contentFileEntity);
-
-		museumEntity.setDeviceEntity(devicelist);
-
-		MuseumEntity savedEntity = museumRepository.save(museumEntity);
-
-		if (savedEntity == null)
-		{
-			return false;
-		}
+		
 		return true;
 	}
 
@@ -189,7 +203,7 @@ public class MuseumService
 
 		// 폴더만들기
 		File dir = new File(contentPath);
-		File thumbdir = new File(contentPath + File.separator + "thumb");
+		File thumbdir = new File(contentPath.endsWith(File.separator) ? contentPath + "thumb" : contentPath + File.separator + "thumb");
 		// + File.separator + SqiUtils.getYYYYmm() //날짜별로 관리하고 싶을때는 날짜를 넣어주기
 		if (!dir.exists())
 		{
@@ -199,9 +213,11 @@ public class MuseumService
 		{
 			thumbdir.mkdirs();
 		}
+
 		// 파일 실제파일이름(폴더에 저장될 이름)
-		final String fileHardName = (UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
-		final String fileThumbHardName = (UUID.randomUUID().toString() + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+		final String fileUuidName = UUID.randomUUID().toString();
+		final String fileHardName = (fileUuidName + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
+		final String fileThumbHardName = (fileUuidName + "." + FilenameUtils.getExtension(file.getOriginalFilename()));
 
 		// 폴더에 방금만든 실제파일이름 으로 파일을 만든다 readonly , executable
 		File saveFile = new File(dir.getCanonicalPath(), fileHardName);
@@ -225,8 +241,5 @@ public class MuseumService
 		deviceDto.setFileOrder(0);
 		return deviceDto;
 	}
-
-	
-
 
 }

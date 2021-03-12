@@ -65,7 +65,7 @@
 							<i class="dropdown icon"></i>
 							<div class="default text">States</div>
 							<div class="menu">
-								<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
+								<div th:each="dev : ${deviceEmptyList}" class="item" th:attr="data-value=${dev.deviceSeq}">
 									<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
 									<span th:text="${dev.deviceName}" />
 

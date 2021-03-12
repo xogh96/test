@@ -1,10 +1,7 @@
 package com.sqisoft.testproject.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.sqisoft.testproject.domain.CategoryEntity;
-import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.model.DeviceDto;
 import com.sqisoft.testproject.service.DeviceService;
@@ -43,6 +38,7 @@ public class MuseumController
 	public String main(Model model)
 	{
 		model.addAttribute("devicelist", deviceService.selectAll());
+		model.addAttribute("deviceEmptyList", museumService.selectAllByEmptyMuseumEntity());
 		model.addAttribute("museumlist", museumService.selectAll());
 		return "/museum/main";
 	}
@@ -55,43 +51,38 @@ public class MuseumController
 		model.addAttribute("deviceSeq", museumService.selectOneDeviceSeq(museumSeq));
 		return "/museum/modify";
 	}
-	
+
 	@PostMapping("/getlist/{deviceSeq}")
-	public String selectlist(@PathVariable Integer deviceSeq , Model model) throws IOException
+	public String selectlist(@PathVariable Integer deviceSeq, Model model) throws IOException
 	{
-		if(deviceSeq==-1) {
-			model.addAttribute("museumlist",museumService.selectAll()); 
-			return "/museum/table";
+		List<MuseumEntity> list;
+		if (deviceSeq == -1)
+		{
+			list = museumService.selectAll();
+		} else
+		{
+			list = museumService.selectDeviceList(deviceSeq);
 		}
-		List<MuseumEntity> list = museumService.selectDeviceList(deviceSeq);
-		model.addAttribute("museumlist",list);
+		model.addAttribute("museumlist", list);
 		return "/museum/table";
 	}
-	
+
 	@PostMapping("/add")
 	@ResponseBody
 	public ResponseEntity<Boolean> saveOne(DeviceDto deviceDto, MultipartHttpServletRequest mRequest) throws IOException
 	{
-		if (museumService.insertOne(deviceDto, mRequest))
-		{
-			return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
-		}
-		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		boolean isSuccess = museumService.insertOne(deviceDto, mRequest);
+		return new ResponseEntity<Boolean>(isSuccess, isSuccess ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
+
 	@PostMapping("/modify/{museumSeq}")
 	@ResponseBody
 	public ResponseEntity<Boolean> modifyOne(@PathVariable Integer museumSeq, DeviceDto deviceDto, MultipartHttpServletRequest mRequest)
 					throws IOException
 	{
-		if (museumService.modifyOne(museumSeq, deviceDto, mRequest))
-		{
-			return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
-		}
-		return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		boolean isSuccess = museumService.modifyOne(museumSeq, deviceDto, mRequest);
+		return new ResponseEntity<Boolean>(isSuccess, isSuccess ? HttpStatus.CREATED : HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-	
-	
 
 	@PostMapping("/remove/{museumSeq}")
 	@ResponseBody

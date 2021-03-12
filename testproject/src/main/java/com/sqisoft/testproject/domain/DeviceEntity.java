@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -46,4 +47,9 @@ public class DeviceEntity implements Serializable
 
 	@Column(name = "dev_cd", columnDefinition = "VARCHAR(50) COMMENT '디바이스_코드' ")
 	private String deviceCode;
+
+//	@ManyToOne(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_device_1"))
+//	private MuseumEntity museumEntity;
+	
 }

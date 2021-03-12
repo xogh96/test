@@ -16,8 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -46,11 +44,6 @@ public class CategoryEntity
 	@JoinColumn(name = "mu_seq", referencedColumnName = "mu_seq", foreignKey = @ForeignKey(name = "fk_tb_category_1"))
 	@JsonManagedReference
 	private MuseumEntity museumEntity;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "dev_seq", referencedColumnName = "dev_seq", foreignKey = @ForeignKey(name = "fk_tb_category_2"))
-	private DeviceEntity deviceEntity;
-
 	
 	@OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "categoryEntity")
 	private List<ContentEntity> contentEntity = new ArrayList<ContentEntity>();

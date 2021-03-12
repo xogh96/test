@@ -13,14 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.DeviceEntity;
-import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.model.CategoryDto;
-import com.sqisoft.testproject.model.DeviceDto;
 import com.sqisoft.testproject.service.CategoryService;
 import com.sqisoft.testproject.service.MuseumService;
 
@@ -52,6 +48,7 @@ public class CategoryController
 		return "/category/modify";
 	}
 
+	@Deprecated
 	@PostMapping("/getdevlist/{museumSeq}")
 	@ResponseBody
 	public List<DeviceEntity> getDeviceList(@PathVariable Integer museumSeq)

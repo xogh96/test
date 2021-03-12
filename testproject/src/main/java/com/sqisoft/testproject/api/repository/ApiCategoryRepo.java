@@ -1,12 +1,12 @@
-package com.sqisoft.testproject.repository;
+package com.sqisoft.testproject.api.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.sqisoft.testproject.domain.CategoryEntity;
 import com.sqisoft.testproject.domain.DeviceEntity;
 
 @Repository
-public interface DeviceRepo extends JpaRepository<DeviceEntity, Integer>
+public interface ApiCategoryRepo extends JpaRepository<CategoryEntity, Integer>
 {
-	boolean existsBydeviceCode(String deviceCode);
 }

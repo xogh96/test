@@ -72,20 +72,17 @@ public class CategoryService
 	@Transactional
 	public boolean insertOne(CategoryDto categoryDto)
 	{
-		if(categoryDto.getDeviceSeq()==null || categoryDto.getMuseumSeq()==null) {
+		if (categoryDto.getMuseumSeq() == null)
+		{
 			throw new SqiException("모든 정보를 입력해주세요");
 		}
-		
+
 		MuseumEntity museumEntity = new MuseumEntity();
 		museumEntity.setMuseumSeq(categoryDto.getMuseumSeq());
-		
-		DeviceEntity deviceEntity = new DeviceEntity();
-		deviceEntity.setDeviceSeq(categoryDto.getDeviceSeq());
 
 		CategoryEntity categoryEntity = new CategoryEntity();
 		categoryEntity.setCategoryName(categoryDto.getCategoryName());
 		categoryEntity.setMuseumEntity(museumEntity);
-		categoryEntity.setDeviceEntity(deviceEntity);
 
 		CategoryEntity savedEntity = categoryRepository.save(categoryEntity);
 		if (savedEntity != null && savedEntity.getCategorySeq() > 0)

@@ -48,7 +48,7 @@
 						<input name="deviceSeq" type="hidden">
 						<i class="dropdown icon"></i>
 						<div class="default text">States</div>
-						<div class="menu">
+						<div class="menu" id="testmenu">
 							<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
 								<span th:text="${dev.deviceName}" />
 							</div>
@@ -79,7 +79,7 @@
 			strdeviceseq.push(String(deviceseq[i]));
 		}
 		$('.ui.dropdown').dropdown('set selected',strdeviceseq);
-		
+		console.log(deviceseq);
 	})
 
 </script>
