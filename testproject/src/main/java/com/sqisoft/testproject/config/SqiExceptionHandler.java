@@ -9,9 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.sqisoft.testproject.model.ErrorMessage;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @ControllerAdvice(basePackages = { "com.sqisoft.testproject.controller" })
 public class SqiExceptionHandler
 {

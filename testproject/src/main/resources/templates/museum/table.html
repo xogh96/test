@@ -12,7 +12,9 @@
 			</thead>
 			<tbody>
 				<tr th:each="mus : ${museumlist}">
-					<td th:text="${mus.museumName}"></td>
+					
+					<td style="color:red;" th:text="${mus.museumName}"></td>
+					
 					<td class="center aligned">
 						<img th:src="${'/admin/file/imageView/' + mus.contentFileEntity.fileSeq}" width="300px"
 							height="100px" alt="이미지가 존재하지 않습니다" />
@@ -27,7 +29,7 @@
 					<td th:text="${mus.museumLoc}"></td>
 					<td>
 						<p style="color:red ;" th:each="device , index : ${mus.deviceEntity}"
-							th:text="${device.deviceName}"></p>
+							th:text="${'('+device.deviceCode+')'+device.deviceName}"></p>
 					</td>
 					<td class="right aligned"><a class="ui button"
 							th:href="${'/admin/mus/modify/'+mus.museumSeq}">수정</a>

@@ -1,12 +1,6 @@
 package com.sqisoft.testproject.api.model;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import com.sqisoft.testproject.domain.ContentFileEntity;
-import com.sqisoft.testproject.domain.DeviceEntity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -21,18 +15,25 @@ public class ApiContentFileDto
 	@AllArgsConstructor
 	public static class contentFileInfo
 	{
+		@Schema(description = "파일_아이디")
 		private Integer fileSeq;
 
+		@Schema(description = "파일_실제_이름")
 		private String fileName;
 
+		@Schema(description = "파일_저장된_이름")
 		private String filePhyName;
 
+		@Schema(description = "파일_썸네일_저장된_이름")
 		private String fileThumbPhyName;
 
+		@Schema(description = "파일_사이즈")
 		private Long fileSize;
 
+		@Schema(description = "파일_타입")
 		private String fileContentType;
 
+		@Schema(description = "파일_순서")
 		private Integer fileOrder;
 
 		public contentFileInfo(ContentFileEntity contentFileEntity)
@@ -47,24 +48,31 @@ public class ApiContentFileDto
 		}
 
 	}
-	
+
 	@Getter
 	@Setter
 	@AllArgsConstructor
 	public static class contentFileLogo
 	{
+		@Schema(description = "파일_아이디")
 		private Integer fileSeq;
 
+		@Schema(description = "파일_실제_이름")
 		private String fileName;
 
+		@Schema(description = "파일_저장된_이름")
 		private String filePhyName;
 
+		@Schema(description = "파일_썸네일_저장된_이름")
 		private String fileThumbPhyName;
 
+		@Schema(description = "파일_사이즈")
 		private Long fileSize;
 
+		@Schema(description = "파일_타입")
 		private String fileContentType;
 
+		@Schema(description = "파일_순서")
 		private Integer fileOrder;
 
 		public contentFileLogo(ContentFileEntity contentFileEntity)

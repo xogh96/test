@@ -15,14 +15,14 @@
 			<div class="menu" id="datas">
 				<div class="item" th:attr="data-value=-1">전체 목록</div>
 				<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
-					<span th:text="${dev.deviceName}" />
+					<span th:text="${'('+dev.deviceCode+')'+dev.deviceName}" />
 				</div>
 			</div>
 		</div>
 	</div>
 
 
-<!--	<div class="ui container right aligned">
+	<!--	<div class="ui container right aligned">
 		<div class="ui toggle checkbox" id="downtf">
 			<input type="checkbox" name="public">
 			<label>다운로드 받기</label>
@@ -63,9 +63,12 @@
 							<!-- This will receive comma separated value like OH,TX,WY !-->
 							<input name="deviceSeq" type="hidden">
 							<i class="dropdown icon"></i>
-							<div class="default text">States</div>
+							<div class="default text" th:if="${deviceEmptyList.size()!=0}">디바이스</div>
+							<div class="default text" th:if="${deviceEmptyList.size()==0}">등록할 디바이스가 없습니다 디바이스 먼저 등록해주세요
+							</div>
 							<div class="menu">
-								<div th:each="dev : ${deviceEmptyList}" class="item" th:attr="data-value=${dev.deviceSeq}">
+								<div th:each="dev : ${deviceEmptyList}" class="item"
+									th:attr="data-value=${dev.deviceSeq}">
 									<span style="color:red" th:text="'('+${dev.deviceCode}+')'" />
 									<span th:text="${dev.deviceName}" />
 
@@ -92,11 +95,11 @@
 
 </html>
 <script>
-	
+
 
 	$(function () {
-		
-		
+
+
 		$('#downtf').checkbox({
 			onChecked: function () {$("span.downdatas").show(); console.log("checked")},
 			onUnchecked: function () {$("span.downdatas").hide();},

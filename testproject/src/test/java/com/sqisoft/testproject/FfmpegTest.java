@@ -1,12 +1,8 @@
 package com.sqisoft.testproject;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
-
-import lombok.extern.slf4j.Slf4j;
 
 
-@Slf4j
 public class FfmpegTest
 {
 	

@@ -49,7 +49,7 @@
 						<i class="dropdown icon"></i>
 						<div class="default text">States</div>
 						<div class="menu" id="testmenu">
-							<div th:each="dev : ${devicelist}" class="item" th:attr="data-value=${dev.deviceSeq}">
+							<div th:each="dev : ${deviceEmptyList}" class="item" th:attr="data-value=${dev.deviceSeq}">
 								<span th:text="${dev.deviceName}" />
 							</div>
 						</div>

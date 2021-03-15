@@ -1,12 +1,10 @@
 package com.sqisoft.testproject.api.model;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.domain.ContentEntity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,42 +16,14 @@ public class ApiContentDto
 	@Setter
 	public static class contentFind
 	{
+		@Schema(description = "콘텐츠_아이디", nullable = false)
 		@NotEmpty
 		private Integer contentSeq;
-	}
-
-	@Getter
-	@Setter
-	public static class contentSave
-	{
-		private String contentName;
-
-		@NotEmpty
-		private Integer categorySeq;
-
-		private MultipartFile file;
-	}
-
-	@Getter
-	@Setter
-	public static class contentUpdate
-	{
-		@NotEmpty
-		private Integer contentSeq;
-
-		private String contentName;
-
-		private Integer categorySeq;
-
-		private MultipartFile file;
-	}
-
-	@Getter
-	@Setter
-	public static class contentDelete
-	{
-		@NotEmpty
-		private Integer contentSeq;
+		
+		public contentFind(Integer conseq)
+		{
+			this.contentSeq = conseq;
+		}
 	}
 
 	@Getter
@@ -61,12 +31,16 @@ public class ApiContentDto
 	@AllArgsConstructor
 	public static class contentInfo
 	{
+		@Schema(description = "콘텐츠_아이디")
 		private Integer contentSeq;
 
+		@Schema(description = "콘텐츠_이름")
 		private String contentName;
 
+		@Schema(description = "카테고리_아이디")
 		private Integer categorySeq;
 
+		@Schema(description = "콘텐츠_파일" )
 		private ApiContentFileDto.contentFileInfo apiContentFileDto;
 
 		public contentInfo(ContentEntity contentEntity)

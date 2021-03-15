@@ -3,7 +3,6 @@ package com.sqisoft.testproject.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,11 +26,9 @@ import com.sqisoft.testproject.repository.DeviceRepo;
 import com.sqisoft.testproject.repository.MuseumRepo;
 import com.sqisoft.testproject.util.FileUtils;
 
-import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
-@Slf4j
 public class MuseumService
 {
 	@Autowired
@@ -60,23 +57,43 @@ public class MuseumService
 	{
 		return museumRepository.findById(museumSeq);
 	}
-	
+
 	@Transactional
 	public List<DeviceEntity> selectAllByEmptyMuseumEntity()
 	{
-		List<DeviceEntity> getlist = deviceRepository.findAll();
-		List<DeviceEntity> emptyList = new ArrayList<DeviceEntity>();
-		List<MuseumEntity> finddeviceEntity = new ArrayList<MuseumEntity>();
-		
-		for (int i = 0; i < getlist.size(); i++)
+		List<DeviceEntity> list = deviceRepository.findAll();
+		List<DeviceEntity> notExistDeviceEntity = new ArrayList<DeviceEntity>();
+		for (int i = 0; i < list.size(); i++)
 		{
-			finddeviceEntity = museumRepository.findByDeviceEntityDeviceSeq(getlist.get(i).getDeviceSeq());
-			if(finddeviceEntity.size()==0) {
-				emptyList.add(getlist.get(i));
+			MuseumEntity info = museumRepository.findByDeviceEntityDeviceSeq(list.get(i).getDeviceSeq());
+			if (info == null)
+			{
+				notExistDeviceEntity.add(list.get(i));
 			}
 		}
-		return getlist;
-		//return emptyList;
+		return notExistDeviceEntity;
+	}
+
+	@Transactional
+	public List<DeviceEntity> selectAllByEmptyMuseumEntityWithExist(Integer museumseq)
+	{
+		List<DeviceEntity> list = deviceRepository.findAll();
+		List<DeviceEntity> notExistDeviceEntity = new ArrayList<DeviceEntity>();
+		for (int i = 0; i < list.size(); i++)
+		{
+			MuseumEntity info = museumRepository.findByDeviceEntityDeviceSeq(list.get(i).getDeviceSeq());
+			if (info == null)
+			{
+				notExistDeviceEntity.add(list.get(i));
+			}
+		}
+		MuseumEntity museumEntity = museumRepository.getOne(museumseq);
+		List<DeviceEntity> existlist = museumEntity.getDeviceEntity();
+		for (int i = 0; i < existlist.size(); i++)
+		{
+			notExistDeviceEntity.add(existlist.get(i));
+		}
+		return notExistDeviceEntity;
 	}
 
 	@Transactional
@@ -93,10 +110,10 @@ public class MuseumService
 		return deviceSeq;
 	}
 
-	public List<MuseumEntity> selectDeviceList(Integer deviceSeq)
+	public MuseumEntity selectDeviceList(Integer deviceSeq)
 	{
-		List<MuseumEntity> list = museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
-		if (list.size() == 0)
+		MuseumEntity list = museumRepository.findByDeviceEntityDeviceSeq(deviceSeq);
+		if (list == null)
 		{
 			throw new SqiException("데이터가 존재하지 않습니다 등록먼저 해주세요");
 		}
@@ -114,7 +131,7 @@ public class MuseumService
 		museumEntity.setMuseumName(getdeviceDto.getMuseumName());
 		museumEntity.setMuseumTel(getdeviceDto.getMuseumTel());
 
-		List <DeviceEntity> list = new ArrayList<DeviceEntity>();
+		List<DeviceEntity> list = new ArrayList<DeviceEntity>();
 
 		for (int i = 0; i < deviceDto.getDeviceSeq().length; i++)
 		{
@@ -122,9 +139,8 @@ public class MuseumService
 							.orElseThrow(() -> new SqiException("device not found!!"));
 			list.add(findDeviceEntity);
 		}
-		
+
 		museumEntity.setDeviceEntity(list);
-	
 
 		ContentFileEntity contentFileEntity = new ContentFileEntity();
 		contentFileEntity.setFileContentType(getdeviceDto.getFileContentType());
@@ -170,7 +186,7 @@ public class MuseumService
 			contentFileEntity.setFileSize(deviceDto.getFileSize());
 			contentFileEntity.setFileThumbPhyName(deviceDto.getFileThumbPhyName());
 		}
-		
+
 		return true;
 	}
 

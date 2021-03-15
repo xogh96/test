@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +22,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
 	@Autowired
 	private AuthProvider authProvider;
+	
+	@Autowired
+	private AuthFailHandler authFailHandler;
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception
@@ -50,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 						//.hasRole("ADMIN").anyRequest().authenticated()
 
 						.and().formLogin().loginPage("/login").defaultSuccessUrl("/").usernameParameter("userId")
-						.passwordParameter("userPassword")
+						.passwordParameter("userPassword").failureHandler(authFailHandler).permitAll()
 
 						.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
 						.invalidateHttpSession(true).clearAuthentication(true)

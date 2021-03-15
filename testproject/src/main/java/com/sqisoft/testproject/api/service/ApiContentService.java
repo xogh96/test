@@ -28,11 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.api.model.ApiContentDto;
-import com.sqisoft.testproject.api.repository.ApiCategoryRepo;
 import com.sqisoft.testproject.api.repository.ApiContentRepo;
 import com.sqisoft.testproject.config.SqiException;
 import com.sqisoft.testproject.domain.ContentEntity;
-import com.sqisoft.testproject.domain.ContentFileEntity;
 import com.sqisoft.testproject.util.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -44,9 +42,6 @@ public class ApiContentService
 {
 	@Autowired
 	private ApiContentRepo apiContentRepository;
-
-	@Autowired
-	private ApiCategoryRepo apiCategoryRepository;
 
 	@Value("${content.file-path}")
 	private String contentPath;
@@ -93,78 +88,6 @@ public class ApiContentService
 		return info;
 	}
 
-	@Transactional
-	public ApiContentDto.contentInfo insertOne(ApiContentDto.contentSave getcontentDto) throws IOException
-	{
-		ApiContentDto.contentInfo data = null;
-		ApiContentDto.contentSave contentDto = getcontentDto;
-
-		ContentEntity contentEntity = new ContentEntity();
-		contentEntity.setContentName(contentDto.getContentName());
-		contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
-
-		if (getcontentDto.getFile() != null)
-		{
-			Map<String, Object> fileInfoMap = getFileInfos(getcontentDto.getFile());
-
-			ContentFileEntity contentFileEntity = new ContentFileEntity();
-			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
-			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
-			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
-			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
-			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
-			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
-			contentEntity.setContentFileEntity(contentFileEntity);
-		}
-
-		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-		data = new ApiContentDto.contentInfo(savedEntity);
-		return data;
-	}
-
-	@Transactional
-	public ApiContentDto.contentInfo updateOne(ApiContentDto.contentUpdate getcontentDto) throws IOException
-	{
-		ApiContentDto.contentInfo data = null;
-		ApiContentDto.contentUpdate contentDto = getcontentDto;
-
-		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
-		// 있으면 바꾸고 없으면 그대로
-		if (contentDto.getContentName() != null)
-		{
-			contentEntity.setContentName(contentDto.getContentName());
-		}
-		if (contentDto.getCategorySeq() != null)
-		{
-			contentEntity.setCategoryEntity(apiCategoryRepository.findById(contentDto.getCategorySeq()).orElse(null));
-		}
-
-		ContentFileEntity contentFileEntity = contentEntity.getContentFileEntity();
-
-		if (getcontentDto.getFile() != null)
-		{
-			Map<String, Object> fileInfoMap = getFileInfos(getcontentDto.getFile());
-
-			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
-			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
-			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
-			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
-			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
-			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
-		}
-		contentEntity.setContentFileEntity(contentFileEntity);
-
-		ContentEntity savedEntity = apiContentRepository.save(contentEntity);
-		data = new ApiContentDto.contentInfo(savedEntity);
-		return data;
-	}
-
-	@Transactional
-	public void deleteOne(ApiContentDto.contentDelete contentDto)
-	{
-		apiContentRepository.deleteById(contentDto.getContentSeq());
-	}
-
 	/**
 	 * 
 	 * @param file
@@ -176,6 +99,7 @@ public class ApiContentService
 	 * @author 박태호 e-mail: th.park@sqisoft.com
 	 * @since 2021. 3. 9.
 	 */
+	@SuppressWarnings("unused")
 	private Map<String, Object> getFileInfos(MultipartFile file) throws IOException
 	{
 

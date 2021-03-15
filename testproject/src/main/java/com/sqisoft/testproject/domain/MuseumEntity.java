@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -56,7 +55,7 @@ public class MuseumEntity
 	// fetch = FetchType.LAZY, mappedBy = "museumEntity")
 	// private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
 
-	@OneToMany()
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tb_museum_device", joinColumns = @JoinColumn(name = "mu_seq"), inverseJoinColumns = @JoinColumn(name = "dev_seq"))
 	private List<DeviceEntity> deviceEntity = new ArrayList<DeviceEntity>();
 

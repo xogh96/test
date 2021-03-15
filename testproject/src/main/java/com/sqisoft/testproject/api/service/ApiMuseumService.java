@@ -18,26 +18,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sqisoft.testproject.api.model.ApiMuseumDto;
-import com.sqisoft.testproject.api.repository.ApiDeviceRepo;
 import com.sqisoft.testproject.api.repository.ApiMuseumRepo;
 import com.sqisoft.testproject.config.SqiException;
-import com.sqisoft.testproject.domain.ContentFileEntity;
-import com.sqisoft.testproject.domain.DeviceEntity;
 import com.sqisoft.testproject.domain.MuseumEntity;
 import com.sqisoft.testproject.util.FileUtils;
 
-import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
 @Service
-@Slf4j
 public class ApiMuseumService
 {
 	@Autowired
 	private ApiMuseumRepo apiMuseumRepository;
-
-	@Autowired
-	private ApiDeviceRepo apiDeviceRepository;
 
 	@Value("${content.file-path}")
 	private String contentPath;
@@ -66,134 +58,19 @@ public class ApiMuseumService
 		return info;
 	}
 
-	@Transactional
-	public ApiMuseumDto.museumInfo insertOne(ApiMuseumDto.museumSave getmuseumDto) throws IOException
-	{
-		ApiMuseumDto.museumInfo info = null;
-		MuseumEntity museumEntity = new MuseumEntity();
-		ApiMuseumDto.museumSave museumDto = getmuseumDto;
-
-		ContentFileEntity contentFileEntity = new ContentFileEntity();
-		// 파일이 있을때만
-		if (getmuseumDto.getFile() != null)
-		{
-
-			Map<String, Object> fileInfoMap = getFileInfos(getmuseumDto.getFile());
-
-			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
-			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
-			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
-			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
-			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
-			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
-		}
-		// dto에서 deviceEntity 가져오기
-		List<DeviceEntity> list = new ArrayList<DeviceEntity>();
-		for (int i = 0; i < museumDto.getDeviceSeq().length; i++)
-		{
-			DeviceEntity deviceEntity = apiDeviceRepository.findById(museumDto.getDeviceSeq()[i]).orElse(null);
-			list.add(deviceEntity);
-		}
-		museumEntity = new MuseumEntity();
-
-		museumEntity.setMuseumLoc(museumDto.getMuseumLoc());
-		museumEntity.setMuseumName(museumDto.getMuseumName());
-		museumEntity.setMuseumTel(museumDto.getMuseumTel());
-		museumEntity.setDeviceEntity(list);
-		museumEntity.setContentFileEntity(contentFileEntity);
-		MuseumEntity savedDeviceEntity = apiMuseumRepository.save(museumEntity);
-		info = new ApiMuseumDto.museumInfo(savedDeviceEntity);
-		return info;
-	}
-
-	@Transactional
-	public ApiMuseumDto.museumInfo updateOne(ApiMuseumDto.museumUpdate getmuseumDto) throws IOException
-	{
-		ApiMuseumDto.museumInfo info = null;
-		MuseumEntity museumEntity = new MuseumEntity();
-		ApiMuseumDto.museumUpdate museumDto = getmuseumDto;
-
-		log.debug(museumDto.toString());
-		// 만약 dto에 museum정보가 존재하면 바꾸기 아니면 그대로
-		museumEntity = apiMuseumRepository.findById(museumDto.getMuseumSeq()).orElse(null);
-		if (museumDto.getMuseumLoc() != null)
-		{
-			if (!museumDto.getMuseumLoc().equals(""))
-			{
-				museumEntity.setMuseumLoc(museumDto.getMuseumLoc());
-			}
-		}
-		if (museumDto.getMuseumName() != null)
-		{
-			if (!museumDto.getMuseumName().equals(""))
-			{
-				museumEntity.setMuseumName(museumDto.getMuseumName());
-			}
-		}
-		if (museumDto.getMuseumTel() != null)
-		{
-			if (!museumDto.getMuseumTel().equals(""))
-			{
-				museumEntity.setMuseumTel(museumDto.getMuseumTel());
-			}
-		}
-
-		// 만약 dto에 deviceseq가 존재하면 바꾸기 아니면 그대로
-		List<DeviceEntity> deviceEntity = museumEntity.getDeviceEntity();
-		if (museumDto.getDeviceSeq() != null)
-		{
-			if (museumDto.getDeviceSeq().length != 0)
-			{
-				// dto에서 deviceEntity 가져오기
-				List<DeviceEntity> list = new ArrayList<DeviceEntity>();
-				for (int i = 0; i < museumDto.getDeviceSeq().length; i++)
-				{
-					DeviceEntity device = apiDeviceRepository.findById(museumDto.getDeviceSeq()[i]).orElse(null);
-					list.add(device);
-					deviceEntity = list;
-				}
-				museumEntity.setDeviceEntity(deviceEntity);
-			}
-		}
-
-		// 만약 dto에 file이 존재하면 바꾸기 아니면 그대로
-		ContentFileEntity contentFileEntity = museumEntity.getContentFileEntity();
-
-		if (museumDto.getFile() != null)
-		{
-			Map<String, Object> fileInfoMap = getFileInfos(museumDto.getFile());
-
-			contentFileEntity.setFileName((String) fileInfoMap.get("FileName"));
-			contentFileEntity.setFilePhyName((String) fileInfoMap.get("FilePhyName"));
-			contentFileEntity.setFileThumbPhyName((String) fileInfoMap.get("FileThumbPhyName"));
-			contentFileEntity.setFileSize((Long) fileInfoMap.get("FileSize"));
-			contentFileEntity.setFileContentType((String) fileInfoMap.get("FileContentType"));
-			contentFileEntity.setFileOrder((Integer) fileInfoMap.get("FileOrder"));
-		}
-		museumEntity.setContentFileEntity(contentFileEntity);
-
-		MuseumEntity savedDeviceEntity = apiMuseumRepository.save(museumEntity);
-		info = new ApiMuseumDto.museumInfo(savedDeviceEntity);
-		return info;
-	}
-
-	@Transactional
-	public void deleteOne(ApiMuseumDto.museumDelete museumDto)
-	{
-		apiMuseumRepository.deleteById(museumDto.getMuseumSeq());
-	}
-
+	
 	/**
 	 * @param file
 	 * @return Map
 	 * @throws IOException
-	 *             multipartFile을 넣으면 파일 저장 후 map(정보)를 return 해준다
+	 *             multipartFile을 넣으면 파일 저장 후 map(정보)을 return 해준다
 	 *
 	 *             key : FileThumbPhyName , FileName , FilePhyName , FileSize , FileContentType , FileOrder
 	 * 
 	 * @author 박태호 e-mail: th.park@sqisoft.com
 	 * @since 2021. 3. 9.
 	 */
+	@SuppressWarnings("unused")
 	private Map<String, Object> getFileInfos(MultipartFile file) throws IOException
 	{
 
@@ -209,7 +86,7 @@ public class ApiMuseumService
 		{
 			throw new SqiException("이미지 파일만 업로드 가능합니다.");
 		}
-
+		
 		// 폴더만들기
 		File dir = new File(contentPath);
 		File thumbdir = new File(contentPath + File.separator + "thumb");
