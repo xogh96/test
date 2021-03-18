@@ -10,10 +10,25 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sqisoft</groupId>
-	<artifactId>testproject</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>test</artifactId>
+	<version>0.0.1</version>
 	<name>testproject</name>
 	<description>testproject</description>
+	<packaging>jar</packaging>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+		</profile>
+		<profile>
+			<id>home</id>
+			<properties>
+				<env>home</env>
+			</properties>
+		</profile>
+	</profiles>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>

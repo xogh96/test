@@ -30,14 +30,14 @@ public class DeviceController
 	public String getAll(Model model)
 	{
 		model.addAttribute("devicelist", deviceService.selectAll());
-		return "/device/main";
+		return "device/main";
 	}
 	
 	@GetMapping("/modify/{deviceSeq}")
 	public String modifypage(Model model ,  @PathVariable Integer deviceSeq)
 	{
 		model.addAttribute("device", deviceService.selectOne(deviceSeq).orElse(null));
-		return "/device/modify";
+		return "device/modify";
 	}
 
 	@PostMapping("/add")

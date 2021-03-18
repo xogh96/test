@@ -38,14 +38,14 @@ public class CategoryController
 	{
 		model.addAttribute("categorylist", categoryService.selectAll());
 		model.addAttribute("museumlist", museumService.selectAll());
-		return "/category/main";
+		return "category/main";
 	}
 
 	@GetMapping("/modify/{categorySeq}")
 	public String modifypage(Model model, @PathVariable Integer categorySeq)
 	{
 		model.addAttribute("category", categoryService.selectOne(categorySeq).orElse(null));
-		return "/category/modify";
+		return "category/modify";
 	}
 
 	@Deprecated
@@ -86,11 +86,11 @@ public class CategoryController
 		if (museumSeq == -1)
 		{
 			model.addAttribute("categorylist", categoryService.selectAll());
-			return "/category/table";
+			return "category/table";
 		}
 		List<CategoryEntity> list = categoryService.selectBymuseumSeq(museumSeq);
 		model.addAttribute("categorylist", list);
-		return "/category/table";
+		return "category/table";
 	}
 
 	@PostMapping("/remove/{categorySeq}")

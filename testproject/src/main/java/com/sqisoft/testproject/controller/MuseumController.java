@@ -40,7 +40,7 @@ public class MuseumController
 		model.addAttribute("devicelist", deviceService.selectAll());
 		model.addAttribute("deviceEmptyList", museumService.selectAllByEmptyMuseumEntity());
 		model.addAttribute("museumlist", museumService.selectAll());
-		return "/museum/main";
+		return "museum/main";
 	}
 
 	@GetMapping("/modify/{museumSeq}")
@@ -50,7 +50,7 @@ public class MuseumController
 		model.addAttribute("museum", museumService.selectOne(museumSeq).orElse(null));
 		model.addAttribute("deviceEmptyList", museumService.selectAllByEmptyMuseumEntityWithExist(museumSeq));
 		model.addAttribute("deviceSeq", museumService.selectOneDeviceSeq(museumSeq));
-		return "/museum/modify";
+		return "museum/modify";
 	}
 
 	@PostMapping("/getlist/{deviceSeq}")
@@ -66,7 +66,7 @@ public class MuseumController
 			MuseumEntity mus = museumService.selectDeviceList(deviceSeq);
 			model.addAttribute("museumlist", mus);
 		}
-		return "/museum/table";
+		return "museum/table";
 	}
 
 	@PostMapping("/add")

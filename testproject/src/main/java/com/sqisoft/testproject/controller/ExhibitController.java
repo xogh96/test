@@ -43,21 +43,21 @@ public class ExhibitController
 	{
 		model.addAttribute("categorylist", categoryService.selectAll());
 		model.addAttribute("museumlist", museumService.selectAll());
-		return "/exhibit/main";
+		return "exhibit/main";
 	}
 
 	@GetMapping("/register/{categorySeq}")
 	public String register(Model model , @PathVariable Integer categorySeq)
 	{
 		model.addAttribute("category" , categoryService.selectOne(categorySeq).orElse(null));
-		return "/exhibit/register";
+		return "exhibit/register";
 	}
 	
 	@GetMapping("/modify/{categorySeq}")
 	public String modify(Model model , @PathVariable Integer categorySeq)
 	{
 		model.addAttribute("category" , categoryService.selectOne(categorySeq).orElse(null));
-		return "/exhibit/modify";
+		return "exhibit/modify";
 	}
 	
 	@PostMapping("/add")
@@ -77,11 +77,11 @@ public class ExhibitController
 		log.debug("getlist 가 호출되었음");
 		if(museumSeq==-1) {
 			model.addAttribute("categorylist",categoryService.selectAll()); 
-			return "/exhibit/table";
+			return "exhibit/table";
 		}
 		List<CategoryEntity> list = categoryService.selectBymuseumSeq(museumSeq);
 		model.addAttribute("categorylist",list);
-		return "/exhibit/table";
+		return "exhibit/table";
 	}
 	
 	@PostMapping("/modify")

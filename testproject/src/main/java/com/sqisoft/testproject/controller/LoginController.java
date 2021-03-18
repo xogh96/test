@@ -22,14 +22,14 @@ public class LoginController
 	{
 		model.addAttribute("userid", session.getAttribute("sessionUserId"));
 		session.invalidate();
-		return "/login/login";
+		return "login/login";
 	}
 	
 	@GetMapping("/login/fail")
 	public String fail(HttpSession session , @RequestParam("sessionUserId") String userid)
 	{
 		session.setAttribute("sessionUserId", userid);
-		return "/login/loginfail";
+		return "login/loginfail";
 	}
 
 }
