@@ -23,7 +23,6 @@ public class AuthFailHandler implements AuthenticationFailureHandler{
 					throws IOException, ServletException
 	{
 		if(exception instanceof BadCredentialsException || exception instanceof UsernameNotFoundException) {
-			log.debug("로그인 실패");
 			response.sendRedirect("/admin/login/fail?sessionUserId="+request.getParameter("userId"));
 		}
 	}

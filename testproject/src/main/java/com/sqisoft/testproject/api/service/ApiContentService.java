@@ -71,13 +71,13 @@ public class ApiContentService
 		ContentEntity contentEntity = apiContentRepository.findById(contentDto.getContentSeq()).orElse(null);
 		Path path = Paths.get(contentPath + File.separator + contentEntity.getContentFileEntity().getFilePhyName());
 		Resource resource = new InputStreamResource(Files.newInputStream(path));
-		
+
 		// header만들기
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDisposition(
-						ContentDisposition.builder("attachment").filename(contentEntity.getContentFileEntity().getFileName(), StandardCharsets.UTF_8).build());
-		
-		return new ResponseEntity<>(resource , headers , HttpStatus.OK);
+		headers.setContentDisposition(ContentDisposition.builder("attachment")
+						.filename(contentEntity.getContentFileEntity().getFileName(), StandardCharsets.UTF_8).build());
+
+		return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 	}
 
 	@Transactional
@@ -148,16 +148,37 @@ public class ApiContentService
 
 			if (StringUtils.startsWith(contentType, "video"))
 			{
+				String os = System.getProperty("os.name").toLowerCase();
+
 				log.debug("ffmpegpath = " + ffmpegPath);
 				Runtime run = Runtime.getRuntime();
 				String input = saveFile.getCanonicalPath();
 				String output = saveThumbFile.getCanonicalPath();
-				String vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath, input, output);
+
+				String vd = null;
+				String[] licmd = null;
+				if (os.contains("win"))
+				{
+					vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath, input, output);
+				} else
+				{
+					vd = String.format("ffmpeg -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", input, output);
+
+					licmd = new String[] { "/bin/sh", "-c", vd };
+				}
 				try
 				{
-					run.exec("cmd.exe chcp 65001");
+					Process process = null;
+					if (os.contains("win"))
+					{
+						run.exec("cmd.exe chcp 65001");
+						process = run.exec(vd);
+					} else
+					{
+						process = run.exec(licmd);
+					}
 					log.debug(vd);
-					Process process = run.exec(vd);
+					process = run.exec(vd);
 					process.waitFor();
 					fileInfos.put("FileThumbPhyName", fileThumbHardName + ".gif");
 				} catch (Exception e)

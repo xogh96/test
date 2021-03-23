@@ -41,10 +41,10 @@ public class ExhibitService
 
 	@Value("${content.file-path}")
 	private String contentPath;
-	
+
 	@Value("${content.ffmpeg-path}")
 	private String ffmpegPath;
-	
+
 	@Autowired
 	private FileUtils fileUtils;
 
@@ -103,7 +103,7 @@ public class ExhibitService
 		{
 			log.debug(content[i]);
 		}
-		
+
 		CategoryEntity categoryEntity = categoryRepository.findById(categorySeq).orElse(null);
 		ContentEntity savedEntity = new ContentEntity();
 
@@ -112,7 +112,7 @@ public class ExhibitService
 			categoryEntity.getContentEntity().get(i).setContentName(content[i]);
 			categoryRepository.save(categoryEntity);
 		}
-		
+
 		List<MultipartFile> realfile = new ArrayList<MultipartFile>();
 		List<String> realcontent = new ArrayList<String>();
 
@@ -130,8 +130,6 @@ public class ExhibitService
 
 		List<FileInfoDto> filelist = setFileInfos(realfile, categoryEntity);
 
-		
-		
 		// 바뀐거저장
 		for (int i = 0; i < realcontent.size(); i++)
 		{
@@ -141,7 +139,7 @@ public class ExhibitService
 			ContentFileEntity contentFileEntity = new ContentFileEntity();
 
 			contentFileEntity.setFileContentType(filelist.get(i).getFileContentType());
-			contentFileEntity.setFileName(filelist.get(i).getFileName());  
+			contentFileEntity.setFileName(filelist.get(i).getFileName());
 			contentFileEntity.setFileOrder(filelist.get(i).getFileOrder());
 			contentFileEntity.setFilePhyName(filelist.get(i).getFilePhyName());
 			contentFileEntity.setFileSize(filelist.get(i).getFileSize());
@@ -163,18 +161,18 @@ public class ExhibitService
 	private List<FileInfoDto> setFileInfos(List<MultipartFile> files, CategoryEntity categoryEntity) throws IOException
 	{
 
-//		if (exist == 0)
-//		{
-//			// validations
-//			if (files.isEmpty())
-//			{
-//				throw new SqiException("파일이 없습니다. 등록해주세요");
-//			}
-//		}
+		// if (exist == 0)
+		// {
+		// // validations
+		// if (files.isEmpty())
+		// {
+		// throw new SqiException("파일이 없습니다. 등록해주세요");
+		// }
+		// }
 
 		int exist = categoryEntity.getContentEntity().size();
 		if (exist + files.size() > 10)
-		{ 
+		{
 			throw new SqiException("작품의 최대 갯수는 10개 입니다");
 		}
 
@@ -195,8 +193,8 @@ public class ExhibitService
 
 		List<FileInfoDto> fileinfo = new ArrayList<FileInfoDto>();
 
-		int totaltime= 0 ;
-		
+		int totaltime = 0;
+
 		for (int i = 0; i < files.size(); i++)
 		{
 			String contentType = fileUtils.getContentType(files.get(i).getInputStream());
@@ -219,7 +217,7 @@ public class ExhibitService
 				files.get(i).transferTo(saveFile);
 
 				FileInfoDto fileInfoDto = new FileInfoDto();
-				
+
 				// 이미지 파일 일 때만 썸네일 생성하기
 				if (StringUtils.startsWith(contentType, "image"))
 				{
@@ -227,32 +225,55 @@ public class ExhibitService
 					Thumbnails.of(saveFile).size(200, 180).toFile(saveThumbFile);
 					int end = getCurrentSeconds();
 					log.debug("썸네일 하나 " + (end - start) + "초");
-					totaltime += (end-start);
+					totaltime += (end - start);
 					fileInfoDto.setFileThumbPhyName(fileThumbHardName);
 				}
-				
-				if(StringUtils.startsWith(contentType, "video")) {
+
+				if (StringUtils.startsWith(contentType, "video"))
+				{
 					log.debug("ffmpegpath = " + ffmpegPath);
+					String os = System.getProperty("os.name").toLowerCase();
 					Runtime run = Runtime.getRuntime();
 					String input = saveFile.getCanonicalPath();
 					String output = saveThumbFile.getCanonicalPath();
-					String vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath , input , output);
-					try {
-						run.exec("cmd.exe chcp 65001");
+
+					String vd = null;
+					String[] licmd = null;
+					if (os.contains("win"))
+					{
+						vd = String.format("%s -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", ffmpegPath, input, output);
+					} else
+					{
+
+						vd = String.format("ffmpeg -i \"%s\" -r 4 -t 5 -s 200x180 \"%s.gif\"", input, output);
+
+						licmd = new String[] { "/bin/sh", "-c", vd };
+					}
+					try
+					{
+						Process process = null;
+						if (os.contains("win"))
+						{
+							run.exec("cmd.exe chcp 65001");
+							process = run.exec(vd);
+						} else
+						{
+							process = run.exec(licmd);
+						}
 						log.debug(vd);
-						Process process = run.exec(vd);
 						process.waitFor();
-						fileInfoDto.setFileThumbPhyName(fileThumbHardName+".gif");
-					}catch(Exception e) {
+						fileInfoDto.setFileThumbPhyName(fileThumbHardName + ".gif");
+					} catch (Exception e)
+					{
 						log.debug(e.toString());
-						throw new SqiException("동영상 썸네일 생성 실패했습니다 다시 확인해주세요"); 
+						throw new SqiException("동영상 썸네일 생성 실패했습니다 다시 확인해주세요");
 					}
 				}
 				// dto에 넣어준다
-				
+
 				fileInfoDto.setFileName(files.get(i).getOriginalFilename());
 				fileInfoDto.setFilePhyName(fileHardName);
-				//fileInfoDto.setFileThumbPhyName(fileThumbHardName);
+				// fileInfoDto.setFileThumbPhyName(fileThumbHardName);
 				fileInfoDto.setFileSize(files.get(i).getSize());
 				fileInfoDto.setFileContentType(contentType);
 				fileInfoDto.setFileOrder(i);
@@ -265,7 +286,9 @@ public class ExhibitService
 		log.debug("모든 썸네일" + totaltime + "초");
 		return fileinfo;
 	}
-    public int getCurrentSeconds(){
-		return (int) (System.currentTimeMillis()/1000);
-    }
+
+	public int getCurrentSeconds()
+	{
+		return (int) (System.currentTimeMillis() / 1000);
+	}
 }

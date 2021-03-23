@@ -1,0 +1,18 @@
+version: "3"
+services:
+  test_database:
+    image: mysql:8.0.23
+    environment:
+      MYSQL_DATABASE: alba_test
+      MYSQL_ROOT_PASSWORD: th.park
+      MYSQL_ROOT_HOST: "%"
+    ports:
+      - 3307:3306
+    
+  test_application:
+    build: .
+    ports:
+      - 8888:8888
+    depends_on:
+      - test_database
+        

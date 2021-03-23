@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sqisoft.testproject.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
+@Slf4j
 public class LoginController
 {
 
@@ -28,6 +31,7 @@ public class LoginController
 	@GetMapping("/login/fail")
 	public String fail(HttpSession session , @RequestParam("sessionUserId") String userid)
 	{
+		log.debug("도착?");
 		session.setAttribute("sessionUserId", userid);
 		return "login/loginfail";
 	}
