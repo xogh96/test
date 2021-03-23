@@ -4,8 +4,9 @@
 application-dev.properties파일 설정
 1. classname , url , username , password -> local에 구현
 2. file-path , ffmpeg-path 원하는 경로로 설정
-3. resources폴더에있는 ffmpeg.exe파일을 설정해준 ffmpeg-path 경로에 넣기
-4. application 실행시 profile dev
+3. resources폴더에있는 ffmpeg.exe파일을 위에서 설정해준 ffmpeg-path 경로에 넣기
+4. application 실행시 profile dev로 설정 후 실행
+    -(application.properties에 이미 설정되어있습니다)
 5. localhost:{설정 port}/admin으로 접속
 
 기타 부족한 사항 알려주시면 감사하겠습니다
